@@ -19,13 +19,13 @@ To get started, you'll want to install the dependencies for this project.
 2. With `pipenv` installed, make sure you have the `all-the-places` repository checked out
 
    ```console
-   git clone git@github.com:maxcrosh/open-places.git
+   git clone https://gitlab.com/maximmakarov1996/places-spider.git
    ```
 
 3. Then you can install the dependencies for the project
 
    ```console
-   cd open-places
+   cd places-spider
    pipenv install
    ```
 
@@ -37,4 +37,5 @@ To get started, you'll want to install the dependencies for this project.
 
 5. If `pipenv run scrapy` ran without complaining, then you have a functional `scrapy` setup and are ready to write a scraper.
 
-## Create a new spider
+## Test
+`pipenv run scrapy crawl avoska_dac --output=avoska.geojson`
