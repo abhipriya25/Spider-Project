@@ -1,7 +1,8 @@
 # places-spider
 
 [**Trello - join kanban board for tracking websites**](https://trello.com/invite/b/zTPUgzqy/be65a2a7215373bc81d7a3f19a273335/data-engineering-team)
-[**Scrapy documentation**](https://docs.scrapy.org//)
+
+[**Scrapy documentation**](https://docs.scrapy.org/)
 
 A project to extract GeoJSON from the web focusing on websites that have 'store locator' pages like restaurants, gas stations, retailers, etc. Each chain has its own bit of software to extract useful information from their site (a "spider"). Each spider can be individually configured to throttle request rate to act as a good citizen on the Internet. 
 
