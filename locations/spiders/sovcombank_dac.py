@@ -26,7 +26,6 @@ class SovcombankSpider(scrapy.Spider):
             item['city'] = city
             item['postcode'] = postcode
             item['country'] = country
-            item['website'] = 'https://www.bricomarche.pl/'
             item['phone'] = '78001000006|74959880000'
             item['website'] = 'https://sovcombank.ru/'
             item['lat'] = float(row['location'][0])
