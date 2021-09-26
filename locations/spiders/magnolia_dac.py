@@ -12,17 +12,17 @@ class MagnoliaSpider(scrapy.Spider):
     start_urls = ['https://shop.mgnl.ru/contacts/stores/']
 
     def parse(self, response):
-        data = self.data_preparation()
+        data = self.data_preparation().to_json()
         i = 0
-        for colums in data:
+        for row in data:
             item = GeojsonPointItem()
             item['ref'] = i
             item['brand'] = 'Magnolia'
             item['country'] = 'Russia'
-            item['addr_full'] = data['addr']
+            item['addr_full'] = row['addr']
             item['website'] = 'https://shop.mgnl.ru/contacts/stores/'
-            item['lat'] = data['lat']
-            item['lon'] = data['lon']
+            item['lat'] = row['lat']
+            item['lon'] = row['lon']
             i+=1
             yield item
 
@@ -44,7 +44,7 @@ class MagnoliaSpider(scrapy.Spider):
             dubl = pop_result_coord[i]
             lat.append(float(pop_result_coord[i][:dubl.find(",")-1]))
             lon.append(float(pop_result_coord[i][dubl.find(",")+1:-1]))
-        data = pd.DataFrame(pop_result_addr, columns={'addr'})
+        data = pd.DataFrame(pop_result_addr,columns={'addr'})
         data['lat'] = lat
         data['lon'] = lon
         return data
