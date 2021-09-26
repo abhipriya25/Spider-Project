@@ -9,7 +9,6 @@ import json
 class MagnumSpider(scrapy.Spider):
     name = 'magnum_dac'
     allowed_domains = ['magnum.kz']
-    # start_urls = ['https://magnum.kz/page/magaziny']
 
     def start_requests(self):
         url = 'https://magnum.kz/page/magaziny'
