@@ -13,8 +13,7 @@ class MagnoliaSpider(scrapy.Spider):
 
     def parse(self, response):
         data = json.loads(self.data_preparation().to_json())  
-        for key, value in data.items():
-            i = 0
+        for i in range(len(data["addr"])):
             item = GeojsonPointItem()
             item['ref'] = i
             item['brand'] = 'Magnolia'
@@ -23,7 +22,6 @@ class MagnoliaSpider(scrapy.Spider):
             item['website'] = 'https://shop.mgnl.ru/contacts/stores/'
             item['lat'] = data['lat'][str(i)]
             item['lon'] = data['lon'][str(i)]
-            i+=1
             yield item
 
     def data_preparation(self):
