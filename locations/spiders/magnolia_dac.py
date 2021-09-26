@@ -12,7 +12,7 @@ class MagnoliaSpider(scrapy.Spider):
     start_urls = ['https://shop.mgnl.ru/contacts/stores/']
 
     def parse(self, response):
-        data = self.data_preparation().to_json()
+        data = json.loads(self.data_preparation().to_json())  
         i = 0
         for row in data:
             item = GeojsonPointItem()
@@ -28,7 +28,7 @@ class MagnoliaSpider(scrapy.Spider):
 
     def data_preparation(self):
         base_url = requests.get("https://shop.mgnl.ru/contacts/stores/").text
-        soup = bfs(base_url)
+        soup = bfs(base_url, features="lxml")
         correct_result= [script for script in soup.find_all('script') if "var shop" in script.text]
         text_result = correct_result[0].text
         pop_result_addr = re.findall('"addr".*', text_result)
