@@ -12,6 +12,7 @@ pandas = "*"
 requests = "*"
 boto3 = "*"
 pyyaml = "*"
+iteration-utilities = "*"
 
 [dev-packages]
 
