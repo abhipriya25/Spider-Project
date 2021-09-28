@@ -14,19 +14,18 @@ class SovcombankSpider(scrapy.Spider):
         for row in data:
             item = GeojsonPointItem()
 
-            street = row.get('street_address')
-            city = row.get('region')
+            street = row.get("address").get('street_address')
+            city = row.get("address").get('region')
             country = 'Russia'
-            postcode = row.get('postal_code')
+            postcode = row.get("address").get("postal_code")
 
             item['ref'] = row['id']
-            item['brand'] = 'Sovcombank'
+            item['brand'] = row['name']
             item['addr_full'] = f'{postcode},{country},{city},{street}'
             item['street'] = street
             item['city'] = city
             item['postcode'] = postcode
             item['country'] = country
-            item['website'] = 'https://www.bricomarche.pl/'
             item['phone'] = '78001000006|74959880000'
             item['website'] = 'https://sovcombank.ru/'
             item['lat'] = float(row['location'][0])
