@@ -9,15 +9,22 @@ class AVSpider(scrapy.Spider):
     #start_urls = ['https://av.ru/ajax/shops/?region=msk&address=']
 
     def start_requests(self):
-        url = ["https://av.ru/ajax/shops/?region=msk&address=", "https://av.ru/ajax/shops/?region=spb&address="]
-        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36"}
+        urls = [
+            "https://av.ru/ajax/shops/?region=msk&address=", 
+            "https://av.ru/ajax/shops/?region=spb&address="
+        ]
+        
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36"
+        }
 
-        yield scrapy.Request(
-            url=url, 
-            method='GET', 
-            headers=headers,
-            callback=self.parse,
-        )
+        for url in urls:
+            yield scrapy.Request(
+                url=url, 
+                method='GET', 
+                headers=headers,
+                callback=self.parse,
+            )
 
     def parse(self, response):
     
