@@ -6,7 +6,7 @@ import re
 import requests
 import json
 import pandas as pd
-import geocoder
+#import geocoder
 class VTBSpider(scrapy.Spider):
     name = 'vtb_dac'
     allowed_domains = ['vtb.ru/']

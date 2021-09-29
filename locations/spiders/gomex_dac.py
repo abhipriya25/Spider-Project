@@ -1,7 +1,7 @@
 import scrapy
 import re
 import json
-from iteration_utilities import deepflatten
+#from iteration_utilities import deepflatten
 from locations.items import GeojsonPointItem
 
 REPLACE = {

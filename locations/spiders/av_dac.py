@@ -8,17 +8,26 @@ class AVSpider(scrapy.Spider):
     allowed_domains = ['av.ru/']
     start_urls = ['https://av.ru/ajax/shops/?region=msk&address=']
 
-    def parse(self):
-        #response = requests.get("https://av.ru/ajax/shops/?region=msk&address=", headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36"})
-        #data = response.json()
-        data = requests.get("https://av.ru/ajax/shops/?region=msk&address=", headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36"}).json()
+    def start_requests(self):
+        url = "https://av.ru/ajax/shops/?region=msk&address="
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36"}
 
+        yield scrapy.Request(
+            url=url, 
+            method='GET', 
+            headers=headers,
+            callback=self.parse,
+        )
+
+    def parse(self, response):
+    
+        data = response.json()
         for i in range(len(data)):
             item = GeojsonPointItem()
 
             item['ref'] = data[i]['id']
             item['brand'] = 'Azbuka Vkusa'
-            item['addr_full'] = data['address']
+            item['addr_full'] = data[i]['address']
             item['country'] = 'Russia'
             item['phone'] = '74955043487|74952230200'
             item['website'] = 'https://av.ru/'
