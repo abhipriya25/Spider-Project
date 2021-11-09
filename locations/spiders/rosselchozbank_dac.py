@@ -39,50 +39,40 @@ class RosselchozbankSpider(scrapy.Spider):
             )
 
     def parse_atm(self, response):
-        # try:
-            data = response.json()['atmItems']
-            for id in list(data):
-                data_point = data[id]
-                item = GeojsonPointItem()
+        data = response.json()['atmItems']
+        for id in list(data):
+            data_point = data[id]
+            item = GeojsonPointItem()
 
-                item['name'] = f'Банкомат - {data_point["name"]}'
-                item['country'] = 'Russia'
-                item['ref'] = id
-                item['brand'] = 'РоссельхозБанк'
-                item['addr_full'] = data_point['address']
-                item['phone'] = '8 (800) 100-0-100'
-                item['opening_hours'] = 'круглосуточно'
-                item['website'] = 'https://www.rshb.ru/'
-                item['lat'] = float(data_point['location_lat'])
-                item['lon'] = float(data_point['location_lng'])
+            item['name'] = f'Банкомат - {data_point["name"]}'
+            item['country'] = 'Russia'
+            item['ref'] = id
+            item['brand'] = 'РоссельхозБанк'
+            item['addr_full'] = data_point['address']
+            item['phone'] = '8 (800) 100-0-100'
+            item['opening_hours'] = 'круглосуточно'
+            item['website'] = 'https://www.rshb.ru/'
+            item['lat'] = float(data_point['location_lat'])
+            item['lon'] = float(data_point['location_lng'])
 
-                yield item
-        # except BaseException:
-        #     with open("log", "a") as f:
-        #         f.write(response.text)
-        #     return
+            yield item
 
     def parse_office(self, response):
-        # try:
-            data = response.json()['officeItems']
-            for id in list(data):
-                data_point = data[id]
-                item = GeojsonPointItem()
+        data = response.json()['officeItems']
+        for id in list(data):
+            data_point = data[id]
+            item = GeojsonPointItem()
 
-                item['name'] = data_point["name"]
-                item['country'] = 'Russia'
-                item['ref'] = id
-                item['brand'] = 'РоссельхозБанк'
-                item['addr_full'] = data_point['address']
-                item['phone'] = '8 (800) 100-0-100'
-                item['opening_hours'] = {'individual': data_point['individual_mode'],
-                                         'legalEntity': data_point['company_mode']}
-                item['website'] = 'https://www.rshb.ru/'
-                item['lat'] = float(data_point['location_lat'])
-                item['lon'] = float(data_point['location_lng'])
+            item['name'] = data_point["name"]
+            item['country'] = 'Russia'
+            item['ref'] = id
+            item['brand'] = 'РоссельхозБанк'
+            item['addr_full'] = data_point['address']
+            item['phone'] = '8 (800) 100-0-100'
+            item['opening_hours'] = {'individual': data_point['individual_mode'],
+                                     'legalEntity': data_point['company_mode']}
+            item['website'] = 'https://www.rshb.ru/'
+            item['lat'] = float(data_point['location_lat'])
+            item['lon'] = float(data_point['location_lng'])
 
-                yield item
-        # except BaseException:
-        #     with open("log", "a") as f:
-        #         f.write(response.text)
-        #     return
+            yield item
