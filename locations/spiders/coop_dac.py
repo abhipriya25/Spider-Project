@@ -42,6 +42,4 @@ class CoopSpider(scrapy.Spider):
 
                 yield item
         except BaseException:
-            with open('log', 'a') as f:
-                f.write(response.text + '\n')
             return
