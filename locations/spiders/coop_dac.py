@@ -11,7 +11,7 @@ class CoopSpider(scrapy.Spider):
 
     def start_requests(self):
         url = 'https://www.coop.hu/wp-admin/admin-ajax.php'
-        for symbol in  string.printable: #string.ascii_uppercase + string.digits:
+        for symbol in string.ascii_uppercase + string.digits:
             yield scrapy.FormRequest(
                 url=url,
                 method='POST',
