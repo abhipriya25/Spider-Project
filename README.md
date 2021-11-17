@@ -1,6 +1,6 @@
 # places-spider
 
-[**Trello - join kanban board for tracking websites**](https://trello.com/invite/b/zTPUgzqy/be65a2a7215373bc81d7a3f19a273335/data-engineering-team)
+[**Trello - join kanban board for tracking websites**](https://trello.com/invite/b/wDuQECbB/9ac32a072ccf145483bef75d8638a5cb/global-data-engineering-places)
 
 [**Scrapy documentation**](https://docs.scrapy.org/)
 
