@@ -20,6 +20,7 @@ class GeojsonPointItem(scrapy.Item):
     country = scrapy.Field()
     phone = scrapy.Field()
     website = scrapy.Field()
+    store_url = scrapy.Field()
     email = scrapy.Field()
     opening_hours = scrapy.Field()
     ref = scrapy.Field()

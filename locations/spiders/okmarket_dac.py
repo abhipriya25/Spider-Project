@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 import scrapy
 from locations.items import GeojsonPointItem
-import uuid
 import re
 import json
-
 
 class OkmarketSpider(scrapy.Spider):
 
@@ -35,20 +33,22 @@ class OkmarketSpider(scrapy.Spider):
         for row in data:
             item = GeojsonPointItem()
 
-            coords = row['coords']
-            item['name'] = row['name']
-            item['country'] = 'Россия'
+            country = 'Россия'
+            street_housenumber = row["address"].replace("\n", "").replace("\r", "")
+            lat = float(row['coords']['latitude'])
+            lon = float(row['coords']['longitude'])
+            
             item['ref'] = row['id']
-            item['brand'] = 'О’КЕЙ'
-            item['addr_full'] = f'{city}, {row["address"]}'
-            item['phone'] = {
-                'call_center': '8 (495) 970-00-08',
-                'shop': row['phone'][0]['label']
-            }
+            item['name'] = row['name']
+            item['country'] = country
+
+            item['brand'] = 'OKEY'
+            item['addr_full'] = f'{street_housenumber}, {city}, {country}'
+            item['phone'] = row['phone'][0]['label']
             item['city'] = city
-            item['opening_hours'] = f'Без выходных {row["time"]["label"]}'
+            item['opening_hours'] = f'Mo-Su {row["time"]["label"]}'
             item['website'] = 'https://www.okmarket.ru'
-            item['lat'] = float(coords['latitude'])
-            item['lon'] = float(coords['longitude'])
+            item['lat'] = lat
+            item['lon'] = lon
 
             yield item

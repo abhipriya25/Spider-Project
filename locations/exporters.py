@@ -16,6 +16,7 @@ mapping = (
     ('name', 'name'),
     ('phone', 'phone'),
     ('website', 'website'),
+    ('store_url', 'store_url'),
     ('opening_hours', 'opening_hours'),
     ('brand', 'brand'),
     ('brand_wikidata', 'brand:wikidata'),
