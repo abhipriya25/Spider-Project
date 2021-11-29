@@ -9,6 +9,10 @@ __pycache__/
 # C extensions
 *.so
 
+# Static files
+*.csv
+*.geojson
+
 # Distribution / packaging
 .Python
 build/
