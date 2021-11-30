@@ -19,7 +19,7 @@ class PochtaBankSpider(scrapy.Spider):
 
     def parse(self, response):
 
-        points_url = 'https://my.pochtabank.ru/api/mapsdkpoi/map?type=clientCenter&tile=[0,0]&zoom=0'
+        points_url = 'https://my.pochtabank.ru/api/mapsdkpoi/map?type=postEmployeeInPostOffice&type=clientCenter&type=miniOffice&type=bankEmployeeInPostOffice&tile=[0,0]&zoom=0'
         
         phone = response.selector.xpath('//*[@id="wrapper"]/div[2]/div/div/div[9]/div/div/div/div[2]/a/div[2]/div[1]/text()').get()
         email = response.selector.xpath('//*[@id="wrapper"]/div[2]/div/div/div[8]/div/div/div/div[2]/div/div[2]/a[1]/div[2]/text()').get()
