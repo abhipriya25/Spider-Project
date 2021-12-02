@@ -5,8 +5,8 @@ from scrapy.http import Request, HtmlResponse
 import re
 
 
-class SovcombankSpider(scrapy.Spider):
-    name = 'sovcombank_dac'
+class SovcombankTerminalsSpider(scrapy.Spider):
+    name = 'sovcombank_terminals_dac'
     allowed_domains = ['sovcombank.ru']
     start_urls = ['https://prod-api.sovcombank.ru/locations?lang=ru']
 
@@ -15,31 +15,31 @@ class SovcombankSpider(scrapy.Spider):
 
         cities = data.get('cities')
         for city in cities:
-            url = f"https://prod-api.sovcombank.ru/points?lang=ru&location={float(city.get('lat')) - 1},{float(city.get('lon')) - 1},{float(city.get('lat')) + 1},{float(city.get('lon')) + 1}&type=office&reference=55.9825,37.18139&for_individual=true"
+            url = f"https://prod-api.sovcombank.ru/points?lang=ru&location={float(city.get('lat')) - 1},{float(city.get('lon')) - 1},{float(city.get('lat')) + 1},{float(city.get('lon')) + 1}&type=terminal&reference=55.9825,37.18139&"
             yield scrapy.Request(url, callback=self.parse_city)
 
         regions = data.get('regions')
         for region in regions:
-            url = f"https://prod-api.sovcombank.ru/points?lang=ru&location={float(region.get('lat')) - 1},{float(region.get('lon')) - 1},{float(region.get('lat')) + 1},{float(region.get('lon')) + 1}&type=office&reference=55.9825,37.18139&for_individual=true"
+            url = f"https://prod-api.sovcombank.ru/points?lang=ru&location={float(region.get('lat')) - 1},{float(region.get('lon')) - 1},{float(region.get('lat')) + 1},{float(region.get('lon')) + 1}&type=terminal&reference=55.9825,37.18139&for_individual=true"
             yield scrapy.Request(url, callback=self.parse_city)
 
     def parse_city(self, response: HtmlResponse):
         data = response.json()
 
-        for office in data:
-            id = office.get('id')
-            name = office.get('name')
-            full_address = office.get("address_source")
-            postal_code = office.get("address").get("postal_code")
+        for terminal in data:
+            id = terminal.get('id')
+            name = terminal.get('name')
+            full_address = terminal.get("address_source")
+            postal_code = terminal.get("address").get("postal_code")
             try:
-                house = office.get("address").get("street_address").split("д.")[1].replace(' ', '')
+                house = terminal.get("address").get("street_address").split("д.")[1].replace(' ', '')
             except Exception:
                 house = ''
-            region = office.get("address").get("region")
-            city = office.get("address").get("city")
-            street = office.get("address").get("street")
-            lng = office.get("location")[0]
-            lat = office.get("location")[1]
+            region = terminal.get("address").get("region")
+            city = terminal.get("address").get("city")
+            street = terminal.get("address").get("street")
+            lng = terminal.get("location")[0]
+            lat = terminal.get("location")[1]
 
             item = GeojsonPointItem()
 
