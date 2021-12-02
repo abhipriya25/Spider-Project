@@ -23,10 +23,6 @@ class SovcombankSpider(scrapy.Spider):
             url = f"https://prod-api.sovcombank.ru/points?lang=ru&location={float(region.get('lat')) - 1},{float(region.get('lon')) - 1},{float(region.get('lat')) + 1},{float(region.get('lon')) + 1}&type=office&reference=55.9825,37.18139&for_individual=true"
             yield scrapy.Request(url, callback=self.parse_city)
 
-        for region in regions:
-            url = f"https://prod-api.sovcombank.ru/points?lang=ru&location={float(region.get('lat')) - 1},{float(region.get('lon')) - 1},{float(region.get('lat')) + 1},{float(region.get('lon')) + 1}&type=terminal&reference=55.9825,37.18139&"
-            yield scrapy.Request(url, callback=self.parse_city)
-
     def parse_city(self, response: HtmlResponse):
         data = response.json()
 
