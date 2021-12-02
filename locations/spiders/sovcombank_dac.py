@@ -4,6 +4,7 @@ from locations.items import GeojsonPointItem
 from scrapy.http import Request, HtmlResponse
 import re
 
+
 class SovcombankSpider(scrapy.Spider):
     name = 'sovcombank_dac'
     allowed_domains = ['sovcombank.ru']
