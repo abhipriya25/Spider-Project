@@ -27,14 +27,14 @@ class VerificentrosSpider(scrapy.Spider):
                     list1.append(re.search('/@.+,(1|2|6)', coord).group().replace('/@','').replace(',2', '').replace(',1', '').replace(',6', ''))
             list_full.append(list1)
                     
-        # print(list_full)
+        
         for i in list_full:
             if i[9] == 'EN OPERACIÓN':
                 item = GeojsonPointItem()
                 item['ref'] = i[0]
-                item['brand'] = 'Verificentros'
-                item['country'] = 'Mexico'
-                item['addr_full'] = f"{item['country']}, {i[2]}"
+                item['brand'] = 'Verificentro'
+                item['country'] = 'México'
+                item['addr_full'] = f"{i[2]}, {item['country']}"
                 item['phone'] = [extract_phone(f"{'52'}, {i}") for i in i[3].split(';')]
                 item['website'] = 'https://verificentros.sedema.cdmx.gob.mx'
                 item['email'] = email
