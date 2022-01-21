@@ -15,6 +15,7 @@ mapping = (
     ('country', 'addr:country'),
     ('name', 'name'),
     ('phone', 'phone'),
+    ('email', 'email'),
     ('website', 'website'),
     ('store_url', 'store_url'),
     ('opening_hours', 'opening_hours'),
