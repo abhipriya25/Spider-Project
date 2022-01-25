@@ -18,9 +18,9 @@ class TatneftSpider(scrapy.Spider):
             item['brand'] = 'Tatneft'
             item['addr_full'] = row['address']
             item['country'] = 'Russia'
-            #item['phone'] = '74956567022|74957254154'
+            item['phone'] = '78553371111'
             item['website'] = 'https://tatneft.ru/'
-            #item['email'] = 'info@avoska.ru'
+            item['email'] = 'tnr@tatneft.ru'
             item['lat'] = float(row['lat'])
             item['lon'] = float(row['lon'])
 
