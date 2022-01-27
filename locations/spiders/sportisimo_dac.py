@@ -10,8 +10,6 @@ class SportisimoSpider(scrapy.Spider):
     name = 'sportisimo_dac'
     allowed_domains = ['sportisimo.sk']
     start_urls = ['https://www.sportisimo.sk/predajne/slovensko']
-    
-
 
     def parse(self, response):
         for link in response.css('div.select_options#store_list_select_country_popup a::attr(href)'):
@@ -25,6 +23,8 @@ class SportisimoSpider(scrapy.Spider):
         email = response.css('p.sb_email a::text').getall()
         country = response.css('div.select_header strong::text').get()
         opening_hours = response.css('p.sb_open::text').getall()
+        #phone = response.xpath('//*[@id="mcetoc_1eron30fu1"]/a::text').get()
+        
         
         data = [{'id':1, 'name':name[0], 'country':country, 'address':address[0], 'email':email[0], 'opening_hours':opening_hours[0],}]
 
