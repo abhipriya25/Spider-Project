@@ -4,6 +4,8 @@ from gc import callbacks
 import scrapy
 from locations.items import GeojsonPointItem
 import re
+import requests
+from locations.operations import extract_phone
 
 
 class SportisimoSpider(scrapy.Spider):
@@ -18,19 +20,17 @@ class SportisimoSpider(scrapy.Spider):
 
     def parse_page(self, response):
         name = response.css('div.sb_name a::text').getall()
-        #ref = response.xpath('//div[@class="col"]/@id').getall()
         address = response.css('div.sb_name span::text').getall()  
         email = response.css('p.sb_email a::text').getall()
         country = response.css('div.select_header strong::text').get()
         opening_hours = response.css('p.sb_open::text').getall()
-        #phone = response.xpath('//*[@id="mcetoc_1eron30fu1"]/a::text').get()
         
         
         data = [{'id':1, 'name':name[0], 'country':country, 'address':address[0], 'email':email[0], 'opening_hours':opening_hours[0],}]
 
         i = 1
         while i < len(name):
-            data.append({'id':i, 'name':name[i], 'country':country, 'address':address[i], 'email':email[i], 'opening_hours':opening_hours[i],})
+            data.append({'id':i, 'name':name[i - 1], 'country':country, 'address':address[i - 1], 'email':email[i - 1], 'opening_hours':opening_hours[i - 1],})
             i += 1
 
 
