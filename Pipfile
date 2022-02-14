@@ -13,6 +13,9 @@ requests = "*"
 boto3 = "*"
 pyyaml = "*"
 iteration-utilities = "*"
+pycountry = "*"
+selenium = "*"
+webdriver-manager = "*"
 
 [dev-packages]
 
