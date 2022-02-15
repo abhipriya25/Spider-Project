@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import scrapy
 import pycountry
 from locations.items import GeojsonPointItem
@@ -50,8 +51,14 @@ class AvoskaSpider(scrapy.Spider):
     def parse(self, response, email: List[str], phone: List[str]):
         '''
         Parse data according to GeojsonPointItem schema.
-        Possible attributes: DATA_FORMAT.md
+        Possible attributes: DATA_FORMAT.md.
+        Scrapy check docs: https://docs.scrapy.org/en/latest/topics/contracts.html.
 
+        @url https://avoska.ru/api/get_shops.php?map=1
+        @returns items 40 60
+        @returns requests 0 0
+        @cb_kwargs {"email": ["info@avoska.ru"], "phone": ["+7(495) 725 41 54"]}
+        @scrapes ref addr_full website lat lon
         '''
         responseData = response.json()
 
