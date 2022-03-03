@@ -47,15 +47,15 @@ class AlphaBankGreeseSpide(scrapy.Spider):
 
     def parse_time(self, schedule: str) -> dict:
         days = ''
-        if re.findall(r'Δευτέρα έως Παρασκευή', schedule) is not -1:
+        if re.findall(r'Δευτέρα έως Παρασκευή', schedule) != -1:
             days += self.DAYS['Δευτέρα έως Παρασκευή'] + ' '
             days += str(re.findall(r'(\d{1,2}[:.]\d{2} ?. ?\d{1,2}[:.]\d{2})', schedule)[0])
         
-        elif re.findall(r'Όλο το 24ωρο', schedule) is not -1:
+        elif re.findall(r'Όλο το 24ωρο', schedule) != -1:
             days += self.DAYS['Όλο το 24ωρο'] + ' '
             days += schedule.split(' ')[1]
         
-        elif re.findall('Δευτέρα, Τετάρτη και Πέμπτη, ώρες', schedule) is not -1:
+        elif re.findall('Δευτέρα, Τετάρτη και Πέμπτη, ώρες', schedule) != -1:
             days += self.DAYS['Δευτέρα, Τετάρτη και Πέμπτη, ώρες'] + ' '
             days += str(re.findall(r'(\d{1,2}[:.]\d{2} ?. ?\d{1,2}[:.]\d{2})', schedule)[0])
 

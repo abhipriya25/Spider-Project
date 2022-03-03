@@ -1,32 +1,44 @@
 # -*- coding: utf-8 -*-
 import scrapy
 from locations.items import GeojsonPointItem
-from bs4 import BeautifulSoup as bfs
+from bs4 import BeautifulSoup
 import re
-import requests
 import json
 import pandas as pd
+import uuid
+
+
 class MagnoliaSpider(scrapy.Spider):
     name = 'magnolia_dac'
+    mode = "chain"
+    categories = ["600-6300-0066"]
+
     allowed_domains = ['shop.mgnl.ru']
     start_urls = ['https://shop.mgnl.ru/contacts/stores/']
+    
 
     def parse(self, response):
-        data = json.loads(self.data_preparation().to_json())  
+        data = json.loads(self.data_preparation(response.text).to_json())
+
         for i in range(len(data["addr"])):
             item = GeojsonPointItem()
-            item['ref'] = i
+
+            country = 'Россия'
+            city_street_housenumber = data['addr'][str(i)]
+
+            item['ref'] = uuid.uuid4().hex
             item['brand'] = 'Magnolia'
-            item['country'] = 'Russia'
-            item['addr_full'] = data['addr'][str(i)]
+            item['country'] = country
+            item['addr_full'] = f"{city_street_housenumber} {country}"
             item['website'] = 'https://shop.mgnl.ru/contacts/stores/'
+            item["phone"] = ["7800250264", "79160378137"]
             item['lat'] = data['lat'][str(i)]
             item['lon'] = data['lon'][str(i)]
+
             yield item
 
-    def data_preparation(self):
-        base_url = requests.get("https://shop.mgnl.ru/contacts/stores/").text
-        soup = bfs(base_url, features="lxml")
+    def data_preparation(self, data):
+        soup = BeautifulSoup(data, features="lxml")
         correct_result= [script for script in soup.find_all('script') if "var shop" in script.text]
         text_result = correct_result[0].text
         pop_result_addr = re.findall('"addr".*', text_result)
