@@ -34,6 +34,7 @@ FEED_FORMAT = os.environ.get('FEED_FORMAT')
 FEED_EXPORTERS = {
     'geojson': 'locations.exporters.GeoJsonExporter',
     'ndgeojson': 'locations.exporters.LineDelimitedGeoJsonExporter',
+    'csv': 'scrapy.exporters.CsvItemExporter',
 }
 
 
