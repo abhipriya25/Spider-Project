@@ -30,7 +30,6 @@ class WatsonsSpider(scrapy.Spider):
 
     
     def parse(self, response):
-        
 
         responseData = response.json()
 
