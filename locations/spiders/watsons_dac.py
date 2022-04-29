@@ -8,7 +8,7 @@ class WatsonsSpider(scrapy.Spider):
     spider_type: str = 'chain'
     
     item_attributes: Dict[str, str] = {'brand': 'Watsons'}
-    allowed_domains: List[str] = ['www.watsons.com.my']
+    allowed_domains: List[str] = ['www.watsons.com.my','api.watsons.com.my']
 
 
     def start_requests(self):
@@ -25,10 +25,30 @@ class WatsonsSpider(scrapy.Spider):
         yield scrapy.Request(
             url=url,
             headers=headers,
-            callback=self.parse
+            callback=self.generateAllUrl
         )
 
-    
+    def generateAllUrl(self, response):
+        responseData = response.json()
+        totalPages = responseData["pagination"]["totalPages"]
+        urls = [f'https://api.watsons.com.my/api/v2/wtcmy/stores/watStores?currentPage={page_number}&pageSize=20&isCceOrCc=false&fields=FULL&lang=en&curr=MYR' for page_number in range(1, totalPages)]
+        
+        headers = {
+            "Content-type": "application/json",
+        }
+
+        
+
+        for url in urls:
+            yield scrapy.Request(
+                url=url,
+                headers=headers,
+                callback=self.parse
+            )
+
+
+
+
     def parse(self, response):
 
         responseData = response.json()
