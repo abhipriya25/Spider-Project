@@ -7,7 +7,7 @@ from locations.categories import Code
 from typing import List, Dict
 
 class CoralEnergySpider(scrapy.Spider):
-    name: str = 'coralenergy_dac'
+    name: str = 'coral_energy_dac'
     spider_type: str = 'chain'
     spider_categories: List[str] = [Code.PETROL_GASOLINE_STATION]
     spider_countries: List[str] = [pycountry.countries.lookup('gr').alpha_2]
