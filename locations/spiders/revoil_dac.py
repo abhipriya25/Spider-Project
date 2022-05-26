@@ -85,6 +85,7 @@ class RevOilSpider(scrapy.Spider):
                 "state": state,
                 "postcode": postcode,
                 "phone": phone,
+                'website': 'https://www.revoil.gr',
                 "lat": lat,
                 "lon": lon
             }

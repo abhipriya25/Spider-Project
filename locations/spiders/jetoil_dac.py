@@ -48,6 +48,7 @@ class JetOilSPider(scrapy.Spider):
                 "ref": int(i),
                 "name": title,
                 "brand": 'JET Oil',
+                "website": "https://www.jetoil.gr/",
                 "lat": float(lat),
                 "lon": float(lon)
             }
