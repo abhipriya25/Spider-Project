@@ -8,7 +8,7 @@ from typing import List, Dict
 from bs4 import BeautifulSoup
 import re
 
-class JetOilSPider(scrapy.Spider):
+class JetOilSpider(scrapy.Spider):
     name: str = 'jetoil_dac'
     spider_type: str = 'chain'
     spider_categories: List[str] = [Code.PETROL_GASOLINE_STATION]
