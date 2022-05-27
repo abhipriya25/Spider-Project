@@ -52,7 +52,7 @@ class BPSpider(scrapy.Spider):
                 'postcode': row['postcode'],
                 'country': row['country_code'],
                 'phone': row['telephone'],
-                'website': 'https://www.bp.com/el_gr/greece.html',
+                'website': 'https://www.bp.com/el_gr/greece/retail.html',
                 'opening_hours': opening,
                 'lat': float(row['lat']),
                 'lon': float(row['lng']),
