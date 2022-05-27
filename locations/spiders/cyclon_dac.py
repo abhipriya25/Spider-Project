@@ -6,13 +6,13 @@ from locations.items import GeojsonPointItem
 from locations.categories import Code
 from typing import List, Dict
 
-class JetOilSpider(scrapy.Spider):
+class CyclonSpider(scrapy.Spider):
     name: str = 'cyclon_dac'
     spider_type: str = 'chain'
     spider_categories: List[str] = [Code.PETROL_GASOLINE_STATION]
     spider_countries: List[str] = [pycountry.countries.lookup('gr').alpha_2]
     item_attributes: Dict[str, str] = {'brand': 'Cyclon Oil'}
-    allowed_domains: List[str] = ['www.cyclon-lpc.com']
+    allowed_domains: List[str] = ['cyclon-lpc.com']
 
     '''
         This API requires coords (lat, lon) that represent the center of a circle
