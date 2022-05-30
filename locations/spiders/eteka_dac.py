@@ -12,7 +12,7 @@ class EtekaSpider(scrapy.Spider):
     spider_categories: List[str] = [Code.PETROL_GASOLINE_STATION]
     spider_countries: List[str] = [pycountry.countries.lookup('gr').alpha_2]
     item_attributes: Dict[str, str] = {'brand': 'ETEKA'}
-    allowed_domains: List[str] = ['aegeanoil.com']
+    allowed_domains: List[str] = ['eteka.com.gr']
 
     def start_requests(self):
         url: str = "https://eteka.com.gr/wp-json/wpgmza/v1/features/base64eJyrVkrLzClJLVKyUqqOUcpNLIjPTIlRsopRMoxR0gEJFGeUFni6FAPFomOBAsmlxSX5uW6ZqTkpELFapVoABU0Wug"
