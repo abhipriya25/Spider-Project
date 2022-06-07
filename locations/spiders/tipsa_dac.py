@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import scrapy
 import pycountry
 import uuid
@@ -30,6 +31,7 @@ class TipsaItem(TypedDict):
 
 
 class TipsaSpider(scrapy.Spider):
+    
     name: str = 'tipsa_dac'
     spider_type: str = SpiderType.CHAIN
     spider_categories: List[str] = [Code.SPECIALTY_STORE]
