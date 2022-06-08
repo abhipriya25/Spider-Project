@@ -61,16 +61,16 @@ class AldiSpider(scrapy.Spider):
             'Szo':'Sat'
         }
 
-        sortedDays = sorted(hours, key=lambda x: x['dayIdx'])
+        sorted_days = sorted(hours, key=lambda x: x['dayIdx'])
 
-        def parseDays(hours_item) -> str:
+        def parse_days(hours_item) -> str:
             dayEng = days_of_week[hours_item['day']]
             closeTime = hours_item['close']
             openTime = hours_item['open']
 
             return f"{dayEng} {openTime}-{closeTime};"
         
-        formattedHours = " ".join(list(map(parseDays, sortedDays)))
+        formattedHours = " ".join(list(map(parse_days, sorted_days)))
 
         return formattedHours
 

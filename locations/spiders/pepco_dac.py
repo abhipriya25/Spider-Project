@@ -19,6 +19,7 @@ class PepcoSpider(scrapy.Spider):
     allowed_domains: List[str] = ['pepco.rs']
     website: str = "https://pepco.rs"
 
+
     def start_requests(self) -> scrapy.Request:
         url: str = 'https://pepco.rs/pronadji-prodavnicu/'
 
@@ -27,7 +28,7 @@ class PepcoSpider(scrapy.Spider):
             callback=self.parse
         )
 
-    def parse_opening_hours(self, tableSelector: scrapy.Selector) -> str:
+    def parse_opening_hours(self, table_selector: scrapy.Selector) -> str:
 
         day_of_week = {
             "Ponedeljak": "Mon",
@@ -39,21 +40,21 @@ class PepcoSpider(scrapy.Spider):
             "Nedelja": "San",
         }
 
-        tableRowsList: List[scrapy.Selector] = tableSelector.css("tr")
+        table_rows_list: List[scrapy.Selector] = table_selector.css("tr")
 
-        def generateOpeningHoursString():
-            for tableRow in tableRowsList:
-                dayRs: str = tableRow.css("th::text").get()
-                dayEn: str = day_of_week[dayRs]
+        def generate_opening_hours() -> str:
+            for table_row in table_rows_list:
+                day_rs: str = table_row.css("th::text").get()
+                day_en: str = day_of_week[day_rs]
 
-                time: str = tableRow.css("td::text").get().replace(" ", "")
+                time: str = table_row.css("td::text").get().replace(" ", "")
 
                 if time == "Затворено":
                     time = "off"
 
-                yield f"{dayEn} {time};"
+                yield f"{day_en} {time};"
         
-        return " ".join(list(generateOpeningHoursString()))
+        return " ".join(list(generate_opening_hours()))
         
  
     def parse(self, response: scrapy.http.Response) -> GeojsonPointItem:
@@ -64,21 +65,21 @@ class PepcoSpider(scrapy.Spider):
         @scrapes ref addr_full country city street postcode website phone opening_hours lat lon
         '''
         
-        selectorsList = response.css(".find-shop-box")
+        selectors_list = response.css(".find-shop-box")
 
-        for selector in selectorsList:
+        for selector in selectors_list:
             
             # Parse address
             addr_full: scrapy.Selector = selector.css(".find-shop-box__text::text").get() 
 
             # Parse coordinates
-            linkWithCoords: str = selector.css("a").attrib['href']
-            extractedCoordsString: str = re.search(r'\d+\.\d+,\d+\.\d+', linkWithCoords).group()
-            lat, lon = [float(coordinate) for coordinate in extractedCoordsString.split(",")]
+            link_with_coords: str = selector.css("a").attrib['href']
+            extracted_coords_string: str = re.search(r'\d+\.\d+,\d+\.\d+', link_with_coords).group()
+            lat, lon = [float(coordinate) for coordinate in extracted_coords_string.split(",")]
 
             # Parse opening hours
-            tableSelector: scrapy.Selector = selector.css(".find-shop-box__open-table")
-            opening_hours: str = self.parse_opening_hours(tableSelector)
+            table_selector: scrapy.Selector = selector.css(".find-shop-box__open-table")
+            opening_hours: str = self.parse_opening_hours(table_selector)
 
             data = {
                 "ref": uuid.uuid4().hex,
