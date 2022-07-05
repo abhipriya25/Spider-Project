@@ -18,23 +18,15 @@ class SaveMoreSpider(scrapy.Spider):
 
     def start_requests(self):
         url = "https://www.savemorecy.com/wp-admin/admin-ajax.php"
-
-        formdata = {
-            "action":"get_stores",
-            "lat":"34.6786322",
-            "lng":"33.0413055",
-            "radius":"500"
-        }
-
-        payload='action=get_stores&lat=34.6786322&lng=33.0413055&radius=500'
-        #formdata = "action=get_stores&lat=34.6786322&lng=33.0413055&radius=500&categories[0]="
-
-
+        
         headers = {
             'accept': 'application/json, text/javascript, */*; q=0.01',
             'content-length': '77',
             'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
         }
+
+        payload='action=get_stores&lat=34.6786322&lng=33.0413055&radius=500'
+        #formdata = "action=get_stores&lat=34.6786322&lng=33.0413055&radius=500&categories[0]="
 
         # yield scrapy.Request(
         #     method='POST',
@@ -42,6 +34,13 @@ class SaveMoreSpider(scrapy.Spider):
         #     body=payload,
         #     headers=headers
         # )
+
+        formdata = {
+            "action":"get_stores",
+            "lat":"34.6786322",
+            "lng":"33.0413055",
+            "radius":"500"
+        }
 
         yield scrapy.FormRequest(
             method='POST',
@@ -56,10 +55,6 @@ class SaveMoreSpider(scrapy.Spider):
         30 Features (2022-06-27)
         '''
         responseData = response.json()
-
-        # Seems that these gas stations are all 24h 
-        #row['WeeklyOperatingDays']
-        #row['WeeklyOperatingHours']
 
         for key, row in responseData.items():
             data = {
