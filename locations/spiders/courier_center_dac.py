@@ -6,6 +6,7 @@ from locations.items import GeojsonPointItem
 from locations.categories import Code
 from typing import List, Dict
 import xmltodict
+import pdb
 
 class CourierCenterSpider(scrapy.Spider):
     name: str = 'courier_center_dac'
@@ -16,9 +17,10 @@ class CourierCenterSpider(scrapy.Spider):
     allowed_domains: List[str] = ['courier.gr']
 
     def start_requests(self):
-        url = 'https://www.courier.gr/physical/stores/markers/s/keq3ke43t6i0fml2jfh948q2l6'
+        url = 'https://www.courier.gr/physical/stores/markers/s/gr4nerftt313acukmo61f51rv1'
         headers = {
-            'cookie': "_ga=GA1.2.937987529.1653915050; frontend=keq3ke43t6i0fml2jfh948q2l6; frontend_cid=hKwylDNjv9bmQRzV; _gid=GA1.2.1944312492.1654165203; _gat_gtag_UA_1370150_52=1"
+            'cookie': '_ga=GA1.2.937987529.1653915050; frontend=gr4nerftt313acukmo61f51rv1; frontend_cid=mWDD7PmgS5IG77FL; _gid=GA1.2.1172909959.1656921992; _gat_gtag_UA_1370150_52=1',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36'
         }
 
         yield scrapy.Request(
@@ -28,10 +30,11 @@ class CourierCenterSpider(scrapy.Spider):
     
     def parse(self, response):
         '''
-            Returns 107 features (2022-06-01)
+            Returns 105 features (2022-06-01)
             Response is xml, we convert to dictionary
         '''
-
+        #pdb.set_trace()
+        print(response.text)
         markerDict = xmltodict.parse(response.text)
         resposeData = markerDict['markers']['marker']
 
