@@ -7,6 +7,7 @@ from locations.categories import Code
 from locations.types import SpiderType
 from typing import List, Dict, Union, TypedDict
 
+
 class GyongyOpeningHours(TypedDict):
     name: str
     day: int
@@ -24,6 +25,7 @@ class GyongyItem(TypedDict):
     openingHours: Dict[str, List[GyongyOpeningHours]]
     lat: str
     long: str
+
 
 class GyongySpider(scrapy.Spider):
     name: str = 'gyongy_dac'
@@ -56,7 +58,7 @@ class GyongySpider(scrapy.Spider):
             'Szombat':'Sat'
         }
 
-        sorted_days = sorted(hours, key=lambda x: x['day'])
+        sorted_days: List[GyongyOpeningHours] = sorted(hours, key=lambda x: x['day'])
 
         def parse_days(hours_item) -> str:
             opening_hours_string: str
@@ -73,11 +75,16 @@ class GyongySpider(scrapy.Spider):
             return opening_hours_string
         
         formatted_hours: str = " ".join(list(map(parse_days, sorted_days)))
-
         return formatted_hours
  
     def parse(self, response: scrapy.http.Response) -> GeojsonPointItem:
-        
+        '''
+        @url https://gyongypatikak.hu/patikak
+        @returns items 618 630
+        @returns requests 0 1
+        @scrapes ref addr_full city postcode website phone opening_hours lat lon
+        '''
+
         pharmacies: List[GyongyItem] = response.json()['pharmacies']
         
         for row in pharmacies:
