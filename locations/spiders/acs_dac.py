@@ -1,33 +1,45 @@
 # -*- coding: utf-8 -*-
 
 import scrapy
-import pycountry
 from locations.items import GeojsonPointItem
-from locations.categories import Code
-from typing import List, Dict
+
+from webdriver_manager.chrome import ChromeDriverManager
+from seleniumwire import webdriver
+from selenium.webdriver.chrome.options import Options
 
 class AcsSpider(scrapy.Spider):
-    name: str = 'acs_dac'
-    spider_type: str = 'chain'
-    spider_categories: List[str] = [Code.COURIERS]
-    spider_countries: List[str] = [pycountry.countries.lookup('gr').alpha_2]
-    item_attributes: Dict[str, str] = {'brand': 'ACS'}
-    allowed_domains: List[str] = ['acscourier.net']
+    
+    name = "acs_dac"
+    brand_name = "ACS"
+    spider_type = "chain"
 
     def start_requests(self):
-        url = 'https://api.acscourier.net/api/locators/branches'
+        '''
+        Request to API needs a key that changes over time
+        seleniumwire extents selemium with driver.requests (captures all the requests)
+        then we loop thourgh requests and search for request to https://api.acscourier.net/api/locators/branches
+        This requests has x-encrypted-key header which is the key that changes over time
+        Finally we keep the key and do the request again from python
+        '''
+        urlPage = 'https://www.acscourier.net/el/myacs/ta-ergaleia-mou/anazitisi-simeiwn/'
+        urlAPI = 'https://api.acscourier.net/api/locators/branches'
+
+        options = Options()
+        options.add_argument("--headless")
+        options.add_argument("'--silent'")
+        driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+        driver.get(urlPage)
+
+        for req in driver.requests:
+            if req.url == urlAPI:
+                key = req.headers['x-encrypted-key']
+                # print(key)
+        url = urlAPI
         headers = {
-            'accept': 'application/json',
-            'origin': 'https://www.acscourier.net',
-            'x-encrypted-key': 'CfDJ8K8bqRJwGMpArr9JVm4T1V-i7jn0LnNQUwFKB26aBvy1j3NEfJgWup1TgaY-epWj4ZaLHTnZfsX3cvS76DZGmRN83Hz1KcIbYt9rG0M7DpvhyqCuKM8kj0cyJWfVmq9RCeRPHfV_fzFCeVN5DcH08AkShacXjTLY6uIGtD1NZcl9YY8HUNj1_dHhQJHg8Bw'
-        }
-        # !!! ATTENTION !!!
-        # Noticed that
-        # 'x-encrypted-key' changes every ~10min
-        # Go to https://www.acscourier.net/el/myacs/ta-ergaleia-mou/anazitisi-simeiwn/
-        # On a browser console->network
-        # CHeck 'branches' request -> headers -> request headers
-        # Get the new value
+                    'accept': 'application/json',
+                    'origin': 'https://www.acscourier.net',
+                    'x-encrypted-key': key
+                }
 
         yield scrapy.Request(
             url=url,
@@ -36,7 +48,7 @@ class AcsSpider(scrapy.Spider):
     
     def parse(self, response):
         '''
-            Returns 717 features (2022-06-01)
+            Returns 715 features (2022-06-23)
             Request link returns a json
         '''
         responseData = response.json()['items']
@@ -84,6 +96,5 @@ class AcsSpider(scrapy.Spider):
                 'opening_hours': open,
                 'lat': float(row['latitude']),
                 'lon': float(row['longtitude']),
-                #'extras': typeMatch[row['typeId']]
             }
             yield GeojsonPointItem(**data)

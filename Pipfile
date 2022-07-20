@@ -16,7 +16,7 @@ iteration-utilities = "*"
 pycountry = "*"
 selenium = "*"
 webdriver-manager = "*"
-pymorphy2 = "*"
+selenium-wire = "*"
 
 [dev-packages]
 
