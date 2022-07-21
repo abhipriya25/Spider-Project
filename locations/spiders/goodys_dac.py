@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import scrapy
-import pycountry
 from locations.items import GeojsonPointItem
-from locations.categories import Code
-from typing import List, Dict
 
 class GoodysSpider(scrapy.Spider):
-    name: str = 'goodys_dac'
-    spider_type: str = 'chain'
-    spider_categories: List[str] = [Code.FAST_FOOD, Code.RESTAURANT]
-    spider_countries: List[str] = [pycountry.countries.lookup('gr').alpha_2]
-    item_attributes: Dict[str, str] = {'brand': 'Goodys'}
-    allowed_domains: List[str] = ['goodys.com']
+    
+    name = "goodys_dac"
+    brand_name = "Goody's"
+    spider_type = "chain"
+
+    # for metadata properties. keep it in comment.
+    # start_urls = ["https://www.goodys.com/ajax/Atcom.Sites.Goodys.Components.StoreFinder.GetStores/?method=TakeAway"]
 
     def start_requests(self):
         url: str = "https://www.goodys.com/ajax/Atcom.Sites.Goodys.Components.StoreFinder.GetStores/?method=TakeAway"
@@ -24,16 +22,23 @@ class GoodysSpider(scrapy.Spider):
 
 
     def parse(self, response):
+        '''
+        @url https://www.goodys.com/ajax/Atcom.Sites.Goodys.Components.StoreFinder.GetStores/?method=TakeAway
+        @returns items 100 104
+        @scrapes ref name addr_full postcode phone website lat lon
+        '''
+
         responseData = response.json()['results']
+
         for row in responseData:
             r = row['StoreStateInfo']['StoreViewInfo']
+
             data = {
                 'ref': r['ID'],
                 'name': r['Name'],
-                'brand': "Goody's",
                 'addr_full': r['Address'],
                 'postcode': r['ZipCode'],
-                'phone': r['ContactPhone'],
+                'phone': [r['ContactPhone']],
                 'website': 'https://www.goodys.com/',
                 'lat': float(r['Lat']),
                 'lon': float(r['Lng'])

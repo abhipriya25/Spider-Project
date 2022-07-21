@@ -1,31 +1,23 @@
 # -*- coding: utf-8 -*-
 
 import scrapy
-import pycountry
 from locations.items import GeojsonPointItem
-from locations.categories import Code
-from typing import List, Dict
 from bs4 import BeautifulSoup
 
-class CoffeeIslandSpider(scrapy.Spider):
-    name: str = 'coffee_island_dac'
-    spider_type: str = 'chain'
-    spider_categories: List[str] = [Code.CAFETERIA]
-    spider_countries: List[str] = [pycountry.countries.lookup('gr').alpha_2]
-    item_attributes: Dict[str, str] = {'brand': 'Coffee Island'}
-    allowed_domains: List[str] = ['coffeeisland.gr']
 
-    def start_requests(self):
-        url = 'https://www.coffeeisland.gr/stores/index'
-        
-        yield scrapy.Request(
-            url=url
-        )
+class CoffeeIslandSpider(scrapy.Spider):
+    
+    name = "coffee_island_dac"
+    brand_name = "Coffee Island"
+    spider_type = "chain"
+
+    start_urls = ["https://www.coffeeisland.gr/stores/index"]
     
     def parse(self, response):
         '''
-            Returns 480 features (2022-05-27)
-            Divs with class='popup-store-link' contain data for stores
+        @url https://www.coffeeisland.gr/stores/index
+        @returns items 470 480
+        @scrapes ref name addr_full opening_hours phone website lat lon
         '''
 
         doc = BeautifulSoup(response.text)
@@ -52,9 +44,8 @@ class CoffeeIslandSpider(scrapy.Spider):
                 pass
             data = {
                 'ref': row['data-marker-id'],
-                'brand': 'Coffee Island',
                 'addr_full': p[0].text,
-                'phone': phone,
+                'phone': [phone],
                 'website': website,
                 'opening_hours': op,
                 'lon': float(row['data-longitude']),

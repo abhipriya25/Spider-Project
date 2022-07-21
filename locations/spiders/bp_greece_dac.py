@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import scrapy
-import pycountry
 from locations.items import GeojsonPointItem
-from locations.categories import Code
-from typing import List, Dict
+
 
 class BPSpider(scrapy.Spider):
-    name: str = 'bp_greece_dac'
-    spider_type: str = 'chain'
-    spider_categories: List[str] = [Code.PETROL_GASOLINE_STATION]
-    spider_countries: List[str] = [pycountry.countries.lookup('gr').alpha_2]
-    item_attributes: Dict[str, str] = {'brand': 'BP Oil'}
-    allowed_domains: List[str] = ['bp.com']
+    
+    name = "bp_greece_dac"
+    brand_name = "BP Oil"
+    spider_type = "chain"
+
+    # for metadata properties. keep it in comment.
+    # start_urls = ["https://bpretaillocator.geoapp.me/api/v1/locations/nearest_to?format=json&lat=41.293187017&lng=23.866648637"]
 
     '''
         This API requires coords (lat, lon) and get the 35 nearest points
@@ -25,10 +24,13 @@ class BPSpider(scrapy.Spider):
 
     def parse(self, response):
         '''
-            852 Features, 765 in Greeece
-            (2022/05/27)
+        @url https://bpretaillocator.geoapp.me/api/v1/locations/nearest_to?format=json&lat=41.293187017&lng=23.866648637
+        @returns items 840 852
+        @scrapes ref name street city postcode phone opening_hours website lat lon
         '''
+        
         responseData = response.json()
+        
         for row in responseData:
             days = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
             if row['opening_hours'] != []:
@@ -45,12 +47,10 @@ class BPSpider(scrapy.Spider):
             data = {
                 'ref': row['id'],
                 'name': row['name'],
-                'brand': 'BP',
                 'street': row['address'],
                 'city': row['city'],
                 'state': row['state'],
                 'postcode': row['postcode'],
-                'country': row['country_code'],
                 'phone': row['telephone'],
                 'website': 'https://www.bp.com/el_gr/greece/retail.html',
                 'opening_hours': opening,

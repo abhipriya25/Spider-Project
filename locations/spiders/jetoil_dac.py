@@ -1,30 +1,26 @@
 # -*- coding: utf-8 -*-
 
 import scrapy
-import pycountry
 from locations.items import GeojsonPointItem
-from locations.categories import Code
-from typing import List, Dict
 from bs4 import BeautifulSoup
 import re
+import uuid
 
 class JetOilSpider(scrapy.Spider):
-    name: str = 'jetoil_dac'
-    spider_type: str = 'chain'
-    spider_categories: List[str] = [Code.PETROL_GASOLINE_STATION]
-    spider_countries: List[str] = [pycountry.countries.lookup('gr').alpha_2]
-    item_attributes: Dict[str, str] = {'brand': 'JET Oil'}
-    allowed_domains: List[str] = ['jetoil.gr']
+    
+    name = "jetoil_dac"
+    brand_name = "JET Oil"
+    spider_type = "chain"
 
-    def start_requests(self):
-        url = 'https://www.jetoil.gr/el/petrol-stations'
-        
-        yield scrapy.Request(
-            url=url
-        )
-
+    start_urls = ["https://www.jetoil.gr/el/petrol-stations"]
 
     def parse(self, response):
+        '''
+        @url https://www.jetoil.gr/el/petrol-stations
+        @returns items 100 106
+        @scrapes ref name addr_full postcode phone website lat lon
+        '''
+
         doc = BeautifulSoup(response.text)
         js = doc.find_all('script')[16].text
         js = ' '.join(js.split())
@@ -45,9 +41,8 @@ class JetOilSpider(scrapy.Spider):
             title = title.replace("'", '')
 
             data = {
-                "ref": int(i),
+                "ref": uuid.uuid4().hex,
                 "name": title,
-                "brand": 'JET Oil',
                 "website": "https://www.jetoil.gr/",
                 "lat": float(lat),
                 "lon": float(lon)

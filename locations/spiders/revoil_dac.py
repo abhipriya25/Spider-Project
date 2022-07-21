@@ -1,26 +1,26 @@
 # -*- coding: utf-8 -*-
 
 import scrapy
-import pycountry
 from locations.items import GeojsonPointItem
-from locations.categories import Code
-from typing import List, Dict
 from bs4 import BeautifulSoup
 import re
+import uuid
 
 class RevOilSpider(scrapy.Spider):
-    name: str = 'revoil_dac'
-    spider_type: str = 'chain'
-    spider_categories: List[str] = [Code.PETROL_GASOLINE_STATION]
-    spider_countries: List[str] = [pycountry.countries.lookup('gr').alpha_2]
-    item_attributes: Dict[str, str] = {'brand': 'REV Oil'}
-    allowed_domains: List[str] = ['revoil.gr']
+    
+    name = "revoil_dac"
+    brand_name = "REV Oil"
+    spider_type = "chain"
+
+    # start_urls = ["https://www.revoil.gr/map.asp"]
 
     def start_requests(self):
         url = 'https://www.revoil.gr/map.asp'
+        
         headers = {
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36"
-        }        
+        }
+
         yield scrapy.Request(
             url=url,
             headers=headers
@@ -28,6 +28,12 @@ class RevOilSpider(scrapy.Spider):
 
 
     def parse(self, response):
+        '''
+        @url https://www.revoil.gr/map.asp
+        @returns items 490 500
+        @scrapes ref name street city state postcode phone website lat lon
+        '''
+
         doc = BeautifulSoup(response.text)
 
         # Response -> script -> Keep all createMarker(new google.maps.LatLng....) elements in a list
@@ -36,7 +42,7 @@ class RevOilSpider(scrapy.Spider):
         pat = re.compile(r'createMarker\(new google.maps.LatLng(.*?)\);')
         shops = pat.findall(js)
 
-        for i, row in enumerate(shops):
+        for row in shops:
             try:
                 patCoords = re.compile(r'\((.*?)\)')
                 coords = patCoords.findall(row)[0]
@@ -77,14 +83,13 @@ class RevOilSpider(scrapy.Spider):
                 state = ''
 
             data = {
-                "ref": int(i),
+                "ref": uuid.uuid4().hex,
                 "name": name,
-                "brand": "REV Oil",
                 "street": street,
                 "city": city,
                 "state": state,
                 "postcode": postcode,
-                "phone": phone,
+                "phone": [phone],
                 'website': 'https://www.revoil.gr',
                 "lat": lat,
                 "lon": lon

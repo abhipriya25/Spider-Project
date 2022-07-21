@@ -1,29 +1,25 @@
 # -*- coding: utf-8 -*-
 
 import scrapy
-import pycountry
 from bs4 import BeautifulSoup
 from locations.items import GeojsonPointItem
-from locations.categories import Code
-from typing import List, Dict
+import uuid
 
 class JumboSpider(scrapy.Spider):
-    name: str = 'jumbo_dac'
-    spider_type: str = 'chain'
-    spider_categories: List[str] = [Code.SPECIALTY_STORE]
-    spider_countries: List[str] = [pycountry.countries.lookup('gr').alpha_2]
-    item_attributes: Dict[str, str] = {'brand': 'Jumbo'}
-    allowed_domains: List[str] = ['https://corporate.e-jumbo.gr/']
+    
+    name = "jumbo_dac"
+    brand_name = "Jumbo"
+    spider_type = 'chain'
 
-    def start_requests(self):
-        url: str = "https://corporate.e-jumbo.gr/katastimata-jumbo/"
-        
-        yield scrapy.Request(
-            url=url
-        )
-
+    start_urls = ["https://corporate.e-jumbo.gr/katastimata-jumbo/"]
 
     def parse(self, response):
+        '''
+        @url https://corporate.e-jumbo.gr/katastimata-jumbo/
+        @returns items 80 90
+        @scrapes ref name addr_full phone website lat lon
+        '''
+
         doc = BeautifulSoup(response.text, 'html.parser')
         item0 = doc.find_all('li', class_='item0 odd first')
         item1 = doc.find_all('li', class_='item1 odd')
@@ -57,7 +53,7 @@ class JumboSpider(scrapy.Spider):
                 latitude = 0
             
             data = {
-                'ref': int(i),
+                'ref': uuid.uuid4().hex,
                 'name': name,
                 'addr_full': address,
                 'phone': phone,
