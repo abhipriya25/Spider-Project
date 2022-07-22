@@ -1,18 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import scrapy
-import pycountry
 from locations.items import GeojsonPointItem
-from locations.categories import Code
-from typing import List, Dict
+
 
 class DEIBlueSpider(scrapy.Spider):
-    name: str = 'deiblue_dac'
-    spider_type: str = 'chain'
-    spider_categories: List[str] = [Code.EV_CHARGING_STATION]
-    spider_countries: List[str] = [pycountry.countries.lookup('gr').alpha_2]
-    item_attributes: Dict[str, str] = {'brand': 'DEI Blue'}
-    allowed_domains: List[str] = ['deiblue.com']
+    
+    name = "deiblue_dac"
+    brand_name = "DEI Blue"
+    spider_type = "chain"
 
     def start_requests(self):
         url: str = "https://www.deiblue.com/main_service/api/infoinit/charging-locations"

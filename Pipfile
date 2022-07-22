@@ -16,7 +16,7 @@ iteration-utilities = "*"
 pycountry = "*"
 selenium = "*"
 webdriver-manager = "*"
-aiohttp = "*"
+selenium-wire = "*"
 
 [dev-packages]
 

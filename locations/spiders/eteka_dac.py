@@ -1,28 +1,23 @@
 # -*- coding: utf-8 -*-
 
 import scrapy
-import pycountry
 from locations.items import GeojsonPointItem
-from locations.categories import Code
-from typing import List, Dict
 
 class EtekaSpider(scrapy.Spider):
-    name: str = 'eteka_dac'
-    spider_type: str = 'chain'
-    spider_categories: List[str] = [Code.PETROL_GASOLINE_STATION]
-    spider_countries: List[str] = [pycountry.countries.lookup('gr').alpha_2]
-    item_attributes: Dict[str, str] = {'brand': 'ETEKA'}
-    allowed_domains: List[str] = ['eteka.com.gr']
+    
+    name = "eteka_dac"
+    brand_name = "ETEKA"
+    spider_type = "chain"
 
-    def start_requests(self):
-        url: str = "https://eteka.com.gr/wp-json/wpgmza/v1/features/base64eJyrVkrLzClJLVKyUqqOUcpNLIjPTIlRsopRMoxR0gEJFGeUFni6FAPFomOBAsmlxSX5uW6ZqTkpELFapVoABU0Wug"
-        
-        yield scrapy.Request(
-            url=url,
-        )
-
+    start_urls = ["https://eteka.com.gr/wp-json/wpgmza/v1/features/base64eJyrVkrLzClJLVKyUqqOUcpNLIjPTIlRsopRMoxR0gEJFGeUFni6FAPFomOBAsmlxSX5uW6ZqTkpELFapVoABU0Wug"]
 
     def parse(self, response):
+        '''
+        @url "https://eteka.com.gr/wp-json/wpgmza/v1/features/base64eJyrVkrLzClJLVKyUqqOUcpNLIjPTIlRsopRMoxR0gEJFGeUFni6FAPFomOBAsmlxSX5uW6ZqTkpELFapVoABU0Wug"
+        @returns items 220 230
+        @scrapes ref name addr_full phone website lat lon
+        '''
+
         responseData = response.json()['markers']
         for row in responseData:
             namePhone = row['title'].replace('<b>','').replace('</b>','')
@@ -48,9 +43,8 @@ class EtekaSpider(scrapy.Spider):
                 
             
             data = {
-                'ref': int(row['id']),
+                'ref': row['id'],
                 'name': name,
-                'brand': 'ETEKA',
                 'addr_full': row['address'],
                 'phone': phone,
                 'website': 'https://eteka.com.gr/',

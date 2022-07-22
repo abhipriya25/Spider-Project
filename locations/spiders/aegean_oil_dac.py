@@ -1,26 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import scrapy
-import pycountry
 from locations.items import GeojsonPointItem
-from locations.categories import Code
-from typing import List, Dict
+
 
 class AegeanOilSpider(scrapy.Spider):
-    name: str = 'aegean_oil_dac'
-    spider_type: str = 'chain'
-    spider_categories: List[str] = [Code.PETROL_GASOLINE_STATION]
-    spider_countries: List[str] = [pycountry.countries.lookup('gr').alpha_2]
-    item_attributes: Dict[str, str] = {'brand': 'Aegean Oil'}
-    allowed_domains: List[str] = ['aegeanoil.com']
+    
+    name = 'aegean_oil_dac'
+    brand_name = "Aegean Oil"
+    spider_type = "chain"
 
-    def start_requests(self):
-        url: str = "https://aegeanoil.com/wp-content/themes/aegeanoil/station_data.json"
-        
-        yield scrapy.Request(
-            url=url,
-        )
-
+    start_urls = ["https://aegeanoil.com/wp-content/themes/aegeanoil/station_data.json"]
 
     def parse(self, response):
         responseData = response.json()['json']
@@ -50,7 +40,6 @@ class AegeanOilSpider(scrapy.Spider):
             data = {
                 'ref': row['ΚΩΔ ΠΕΛΑΤ'],
                 'name': row['ΠΕΛΑΤΗΣ'],
-                'brand': 'Aegean Oil',
                 'street': row['ΔΙΕΥΘΥΝΣΗ'],
                 'city': row['ΠΟΛΗ'],
                 'website': 'https://aegeanoil.com/',

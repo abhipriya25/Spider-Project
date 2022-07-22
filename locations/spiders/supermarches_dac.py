@@ -1,19 +1,15 @@
 # -*- coding: utf-8 -*-
 
 import scrapy
-import pycountry
 import re
 from bs4 import BeautifulSoup
 from locations.items import GeojsonPointItem
-from locations.categories import Code
-from typing import List, Dict
+
 
 class SupermarchesSpider(scrapy.Spider):
-    name: str = 'supermarches_dac'
-    spider_type: str = 'generic'
-    spider_categories: List[str] = [Code.MARKET]
-    spider_countries: List[str] = [pycountry.countries.lookup('fr').alpha_2]
-    allowed_domains: List[str] = ['supermarches.grandes-enseignes.com']
+    
+    name = "supermarches_dac"
+    spider_type = "generic"
 
     '''
     Base URL: https://supermarches.grandes-enseignes.com/
@@ -96,10 +92,10 @@ class SupermarchesSpider(scrapy.Spider):
                         website = ''
 
                     data = {
-                        'brand': brand,
                         'ref': f'{cityID}_{i}',
+                        'brand': brand,
                         'name': title,
-                        'phone': phone,
+                        'phone': [phone],
                         'website': website,
                         'lat': float(lat),
                         'lon': float(lon)

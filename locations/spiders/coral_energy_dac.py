@@ -1,18 +1,15 @@
 # -*- coding: utf-8 -*-
 
 import scrapy
-import pycountry
 from locations.items import GeojsonPointItem
-from locations.categories import Code
-from typing import List, Dict
+
 
 class CoralEnergySpider(scrapy.Spider):
-    name: str = 'coral_energy_dac'
-    spider_type: str = 'chain'
-    spider_categories: List[str] = [Code.PETROL_GASOLINE_STATION]
-    spider_countries: List[str] = [pycountry.countries.lookup('gr').alpha_2]
-    item_attributes: Dict[str, str] = {'brand': 'Shell'}
-    allowed_domains: List[str] = ['coralenergy.gr']
+    
+    name = 'coral_energy_dac'
+    brand_name = "Shell"
+    spider_type = 'chain'
+
 
     def start_requests(self):
         url: str = "https://www.coralenergy.gr/umbraco/api/NetworkDisplay/GetPoints/"
