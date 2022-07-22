@@ -9,7 +9,16 @@ headers = {
 
 response = requests.get(url, headers=headers)
 
-data = response.json()['object']
-df = pd.DataFrame(data)
-df.to_csv('MTC.csv')
-df.head()
+
+print(response.json()['object'])
+
+
+
+for row in response.json()['object']:
+  print(row['id'])
+  print(row['lat'])
+  print(row['long'])
+  print(row['name'])
+  print(row['schedule'])
+  print(row['fullAddress'])
+  print('\n')
