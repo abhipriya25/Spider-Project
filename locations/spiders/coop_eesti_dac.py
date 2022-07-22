@@ -18,8 +18,8 @@ class CoopEestiSpider(scrapy.Spider):
         yield scrapy.Request(
             url=url
         )
-
-    def parse(self, response):
+    
+    def parse_opening_hours(self, work):
         DAYS = {
             'E': 'Mo',
             'T': 'Tu',
@@ -30,24 +30,9 @@ class CoopEestiSpider(scrapy.Spider):
             'P': 'Su',
             'suletud': 'off'
         }
-        soup = BeautifulSoup(response.text, "html.parser")
-        marker = soup.find_all('div', class_='marker')
-        pattern = re.compile(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+')
-        for row in marker:
-            storename = row.p.span.text
-            try:
-                website = row.find('p', class_='btn-wrap').find('a')['href']
-                website = 'https://www.coop.ee' + str(website)
-            except:
-                website = ""
-            try:
-                email = row.find(href=pattern).text
-            except:
-                email = ""
-            # Opening hours
-            work = row.find('p', class_='_mb15').text.strip()
-            for key, value in DAYS.items():
-                work = work.replace(key, value)
+
+         for key, value in DAYS.items():
+            work = work.replace(key, value)
             work = work.split(' ')
             days = work[0::2]
             dop = work[1::2]
@@ -79,7 +64,31 @@ class CoopEestiSpider(scrapy.Spider):
                     newlist.clear()
             op_str = ["{} {:0>2}".format(days, bignewlist) for bignewlist, days in zip(bignewlist, days)]
             op_hours = "; ".join(op_str)
-            # Addres
+
+        return op_hours
+
+    def parse(self, response):
+        
+        soup = BeautifulSoup(response.text, "html.parser")
+        marker = soup.find_all('div', class_='marker')
+        pattern = re.compile(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+')
+        for row in marker:
+            storename = row.p.span.text
+            try:
+                store_url = row.find('p', class_='btn-wrap').find('a')['href']
+                store_url = 'https://www.coop.ee' + str(website)
+            except:
+                store_url = ""
+            try:
+                email = row.find(href=pattern).text
+            except:
+                email = ""
+            
+            # Opening hours
+            work = row.find('p', class_='_mb15').text.strip()
+            opening_hours = self.parse_opening_hours(work)
+
+            # Address
             addr3 = row.p
             for count in range(4):
                 addr3 = addr3.next_sibling
@@ -90,7 +99,8 @@ class CoopEestiSpider(scrapy.Spider):
                 'brand': 'Coop Eesti',
                 'name': storename,
                 'addr_full': addr,
-                'website': website,
+                'store_url': store_url,
+                'website': 'https://www.coop.ee/kauplused',
                 'email': email,
                 'opening_hours': op_hours,
                 'lon': float(row["data-lng"]),
