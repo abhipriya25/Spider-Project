@@ -12,10 +12,6 @@ class WatsonsSpider(scrapy.Spider):
 
 
     def start_requests(self):
-        '''
-        Spider entrypoint. 
-        Request chaining starts from here.
-        '''
         url: str = "https://api.watsons.com.my/api/v2/wtcmy/stores/watStores?currentPage=0&pageSize=20&isCceOrCc=false&fields=FULL&lang=en&curr=MYR"
         
         headers = {
@@ -31,13 +27,11 @@ class WatsonsSpider(scrapy.Spider):
     def generateAllUrl(self, response):
         responseData = response.json()
         totalPages = responseData["pagination"]["totalPages"]
-        urls = [f'https://api.watsons.com.my/api/v2/wtcmy/stores/watStores?currentPage={page_number}&pageSize=20&isCceOrCc=false&fields=FULL&lang=en&curr=MYR' for page_number in range(1, totalPages)]
+        urls = [f'https://api.watsons.com.my/api/v2/wtcmy/stores/watStores?currentPage={page_number}&pageSize=20&isCceOrCc=false&fields=FULL&lang=en&curr=MYR' for page_number in range(0, totalPages)]
         
         headers = {
             "Content-type": "application/json",
         }
-
-        
 
         for url in urls:
             yield scrapy.Request(
@@ -54,6 +48,8 @@ class WatsonsSpider(scrapy.Spider):
         responseData = response.json()
 
         for row in responseData['stores']:
+            
+
             data = {
                 'ref': row.get("address").get("id"),
                 'name':row.get("displayName"),
@@ -66,3 +62,8 @@ class WatsonsSpider(scrapy.Spider):
                 'lon': float(row.get("geoPoint").get("longitude")), 
             }
             yield GeojsonPointItem(**data)
+
+    
+   
+
+
