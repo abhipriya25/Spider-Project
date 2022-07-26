@@ -6,7 +6,7 @@ import json
 import uuid
 import re
 
-class InwiSpider(scrapy.Spider):
+class CreditAricoleSpider(scrapy.Spider):
     name: str = 'creditagricole_dac'
     spider_type: str = 'chain'
     
