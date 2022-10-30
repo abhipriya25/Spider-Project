@@ -34,24 +34,24 @@ class VisionexpressSpider(scrapy.Spider):
             callback=self.parse,
         )
 
-    # def parse_contacts(self, response):
-    #     '''
-    #     Parse contact information: phone, email, fax, etc.
-    #     '''
-    #
-    #     email: List[str] = [
-    #         response.xpath("//*[@id='shops']/div/div/div/footer/div/div/div[6]/div/ul/li[2]/a/text()").get()
-    #     ]
-    #
-    #     dataUrl: str = 'https://vxpim.visionexpress.in/pim/pimresponse.php/?service=storelocator&store=1'
-    #
-    #     yield scrapy.Request(
-    #         dataUrl,
-    #         callback=self.parse,
-    #         cb_kwargs=dict(email=email)
-    #     )
+    def parse_contacts(self, response):
+        '''
+        Parse contact information: phone, email, fax, etc.
+        '''
 
-    def parse(self, response):
+        email: List[str] = [
+            response.xpath("//*[@id='shops']/div/div/div/footer/div/div/div[6]/div/ul/li[2]/a/text()").get()
+        ]
+
+        dataUrl: str = 'https://vxpim.visionexpress.in/pim/pimresponse.php/?service=storelocator&store=1'
+
+        yield scrapy.Request(
+            dataUrl,
+            callback=self.parse,
+            cb_kwargs=dict(email=email)
+        )
+
+    def parse(self, response,email: List[str]):
         '''
         @url https://visionexpress.in/findstore
         @returns items 110 150
@@ -67,7 +67,7 @@ class VisionexpressSpider(scrapy.Spider):
                 'city': row.get('city'),
                 'state': row.get('state'),
                 'postcode': row.get('postcode'),
-                # 'email': email,
+                'email': email,
                 'phone': row.get('store_phone'),
                 'website': 'https://visionexpress.in/',
                 'lat': float(row.get('lat')),
