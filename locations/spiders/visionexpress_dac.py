@@ -1,6 +1,4 @@
 # _*_ coding: utf-8 _*_
-
-
 import scrapy
 from locations.categories import Code
 from locations.items import GeojsonPointItem
@@ -10,12 +8,14 @@ from typing import List, Dict
 
 class VisionexpressSpider(scrapy.Spider):
     name: str = 'visionexpress_dac'
-    #brand_name: str = 'visionexpress'
+    # brand_name: str = 'visionexpress'
     spider_type: str = 'chain'
     spider_categories: List[str] = [Code.SPECIALTY_STORE]
     spider_countries: List[str] = [pycountry.countries.lookup('in').alpha_3]
     item_attributes: Dict[str, str] = {'brand': 'Vision Express'}
     allowed_domains: List[str] = ['visionexpress.in']
+
+
 
     # start_urls = ["https://vxpim.visionexpress.in/pim/pimresponse.php/?service=storelocator&store=1"]
 
