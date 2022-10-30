@@ -1,3 +1,6 @@
+# _*_ coding: utf-8 _*_
+
+
 import scrapy
 from locations.categories import Code
 from locations.items import GeojsonPointItem
@@ -6,15 +9,18 @@ from typing import List, Dict
 
 
 class VisionexpressSpider(scrapy.Spider):
-    name = 'visionexpress_dac'
-    brand_name = 'vision express'
-    spider_type = 'chain'
-    spider_categories = [Code.SPECIALTY_STORE]
-    spider_countries = [pycountry.countries.lookup('in').alpha_3]
-    allowed_domains = ['visionexpress.in']
+    name: str = 'visionexpress_dac'
+    #brand_name: str = 'visionexpress'
+    spider_type: str = 'chain'
+    spider_categories: List[str] = [Code.SPECIALTY_STORE]
+    spider_countries: List[str] = [pycountry.countries.lookup('in').alpha_3]
+    item_attributes: Dict[str, str] = {'brand': 'Vision Express'}
+    allowed_domains: List[str] = ['visionexpress.in']
+
+    # start_urls = ["https://vxpim.visionexpress.in/pim/pimresponse.php/?service=storelocator&store=1"]
 
     def start_requests(self):
-        url = 'https://visionexpress.in/findstore'
+        url: str = 'https://vxpim.visionexpress.in/pim/pimresponse.php/?service=storelocator&store=1'
 
         headers = {
             'lat': '42.66519',
@@ -37,7 +43,7 @@ class VisionexpressSpider(scrapy.Spider):
             response.xpath("//*[@id='shops']/div/div/div/footer/div/div/div[6]/div/ul/li[2]/a/text()").get()
         ]
 
-        dataUrl: str = 'https://avoska.ru/api/get_shops.php?map=1'
+        dataUrl: str = 'https://vxpim.visionexpress.in/pim/pimresponse.php/?service=storelocator&store=1'
 
         yield scrapy.Request(
             dataUrl,
@@ -49,7 +55,7 @@ class VisionexpressSpider(scrapy.Spider):
         '''
         @url https://visionexpress.in/findstore
         @returns items 110 150
-        @scrapres ref name addr_full city state postcode email phone website lat lon opening_hours
+        @scrapres ref name addr_full city state postcode phone website lat lon opening_hours
         '''
 
         responseData = response.json()
@@ -61,11 +67,11 @@ class VisionexpressSpider(scrapy.Spider):
                 'city': row.get('city'),
                 'state': row.get('state'),
                 'postcode': row.get('postcode'),
-                'email': email,
+                # 'email': email,
                 'phone': row.get('store_phone'),
                 'website': 'https://visionexpress.in/',
-                'lat': row.get('lat'),
-                'lon': row.get('lng'),
+                'lat': float(row.get('lat')),
+                'lon': float(row.get('lng')),
                 'opening_hours': row.get('store_timing'),
             }
             yield GeojsonPointItem(**data)
