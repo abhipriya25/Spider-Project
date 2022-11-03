@@ -5,6 +5,7 @@ from locations.categories import Code
 from locations.items import GeojsonPointItem
 import pycountry
 from typing import List
+from uuid import uuid4
 
 
 class CostaCoffeeSpider(scrapy.Spider):
@@ -14,9 +15,6 @@ class CostaCoffeeSpider(scrapy.Spider):
     spider_categories: List[str] = [Code.BAKERY_AND_BAKED_GOODS_STORE]
     spider_countries: List[str] = [pycountry.countries.lookup('in').alpha_3]
     allowed_domains: List[str] = ['costacoffee.in/']
-
-    #start_urls = ["https://www.costacoffee.in/api/cf/?locale=en-IN&include=2&content_type=storeLocatorStore&limit=500&f\
-    #ields.location[near]=28.553532369889,77.12456293893058"]
 
     def start_requests(self):
         url = "https://www.costacoffee.in/api/cf/?locale=en-IN&include=2&content_type=storeLocatorStore&limit=500&f\
@@ -34,18 +32,35 @@ class CostaCoffeeSpider(scrapy.Spider):
             # Response will be parsed in parse function
             callback=self.parse,
         )
+    def parse_contacts(self, response):
+        '''
+        Parse contact information: phone, email, fax, etc.
+        '''
+
+        email: List[str] = [
+            response.xpath("/html/body/div[1]/div[1]/div/main/article/div/p[2]/a/text()").get()
+        ]
+
+        dataUrl: str = 'https://www.costacoffee.in/help-and-advice'
+
+        yield scrapy.Request(
+            dataUrl,
+            callback=self.parse,
+            cb_kwargs=dict(email=email, phone=phone)
+        )
 
 
-    def parse(self, response):
+    def parse(self, response, email: List[str]):
 
         responseData = response.json()
 
         for row in responseData['items']:
             data = {
-                'ref': row.get('fields').get('storeType').get('sys').get('id'),
+                'ref': str(uuid4()),
                 'name': row.get('fields').get('storeName'),
                 'addr_full': row.get('fields').get('storeAddress'),
                 'website': 'costacoffee.in/',
+                'email': email,
                 'lat': float(row.get('fields').get('location').get('lat')),
                 'lon': float(row.get('fields').get('location').get('lon')),
             }
