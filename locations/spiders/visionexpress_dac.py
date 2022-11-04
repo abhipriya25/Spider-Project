@@ -3,7 +3,7 @@ import scrapy
 from locations.categories import Code
 from locations.items import GeojsonPointItem
 import pycountry
-from typing import List, Dict
+from typing import List
 
 
 class VisionexpressSpider(scrapy.Spider):
