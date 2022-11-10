@@ -15,6 +15,7 @@ pyyaml = "*"
 iteration-utilities = "*"
 pycountry = "*"
 pyopenssl = "==22.0.0"
+numpy = "*"
 
 [dev-packages]
 
