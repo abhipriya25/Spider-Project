@@ -52,6 +52,12 @@ class WilliamjohnspizzaSpider(scrapy.Spider):
 
 
     def parse(self, response, email: List[str], opening_hours: List[str]):
+        '''
+        @url https://williamjohnspizza.com/wp-admin/admin-ajax.php?action=store_search&lat=23.022505&lng=72.571362&max_results=25&search_radius=50&autoload=1
+        @returns items 20 40
+        @scrapes ref name addr_full city state country postcode email phone website lat lon
+        '''
+
 
         responseData = response.json()
 

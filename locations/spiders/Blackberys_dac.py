@@ -67,6 +67,11 @@ class BlackberysSpider(scrapy.Spider):
         return " ".join(opening_hours)
 
     def parse(self, response):
+        '''
+        @url https://storeapi.sekel.tech/v1/store-ivr-list/4d612d3a-b433-46b5-82c2-0181d72fde05/?city= + i
+        @returns items 250 300
+        @scrapes ref name addr_full city state country email  website phone lat lon
+        '''
 
         responseData = response.json()
 
