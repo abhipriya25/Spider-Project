@@ -41,7 +41,7 @@ class WilliamjohnspizzaSpider(scrapy.Spider):
         dinner_open = str((int(dinner[8:10])+12)) if len(dinner[8:10].replace(" ", "")) == 2 else str((int(dinner[8:9])+12))
         dinner_close = str((int(dinner[15:17])+12)) if len(dinner[15:17].replace(" ", "")) == 2 else str((int(dinner[15:16])+12))
 
-        opening_hours: List[str] = [f'Mo-Sa {lunch_open}:00-{lunch_close}:00,{dinner_open}:00-{dinner_close}:00']
+        opening_hours: List[str] = [f'Mo-Su {lunch_open}:00-{lunch_close}:00,{dinner_open}:00-{dinner_close}:00']
 
 
 
