@@ -35,9 +35,13 @@ class WilliamjohnspizzaSpider(scrapy.Spider):
         ]
         lunch = str(response.xpath("/html[1]/body[1]/div[1]/footer[1]/div[1]/div[1]/section[1]/div[1]/div[2]/div[1]/div[2]/div[1]/ul[1]/li[1]/span[2]/text()").get())
         dinner = str(response.xpath('/html[1]/body[1]/div[1]/footer[1]/div[1]/div[1]/section[1]/div[1]/div[2]/div[1]/div[2]/div[1]/ul[1]/li[2]/span[2]/text()').get())
-        lunch = lunch[7:12]
-        dinner = dinner[15:]
-        opening_hours: List[str] = [f'{lunch} opening - {dinner} closing']
+
+        lunch_open = lunch[7:9] if len(lunch[7:9].replace(" ", "")) == 2 else str((int(lunch[7:8])+12))
+        lunch_close = lunch[15:17] if len(lunch[15:17].replace(" ", "")) == 2 else str((int(lunch[15:16])+12))
+        dinner_open = str((int(dinner[8:10])+12)) if len(dinner[8:10].replace(" ", "")) == 2 else str((int(dinner[8:9])+12))
+        dinner_close = str((int(dinner[15:17])+12)) if len(dinner[15:17].replace(" ", "")) == 2 else str((int(dinner[15:16])+12))
+
+        opening_hours: List[str] = [f'Mo-Sa {lunch_open}:00-{lunch_close}:00,{dinner_open}:00-{dinner_close}:00']
 
 
 
@@ -52,12 +56,6 @@ class WilliamjohnspizzaSpider(scrapy.Spider):
 
 
     def parse(self, response, email: List[str], opening_hours: List[str]):
-        '''
-        @url https://williamjohnspizza.com/wp-admin/admin-ajax.php?action=store_search&lat=23.022505&lng=72.571362&max_results=25&search_radius=50&autoload=1
-        @returns items 20 40
-        @scrapes ref name addr_full city state country postcode email phone website lat lon
-        '''
-
 
         responseData = response.json()
 
