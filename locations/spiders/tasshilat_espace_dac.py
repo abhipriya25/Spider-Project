@@ -21,7 +21,7 @@ class TasshilatEspaceSpider(scrapy.Spider):
         yield scrapy.Request(
             url=url, 
             method='GET',
-            # Response will be parsed in parse function
+            # Response will be parsed in parse functions
             callback=self.parse_villes
         )
 
@@ -37,7 +37,6 @@ class TasshilatEspaceSpider(scrapy.Spider):
                 # Response will be parsed in parse function
                 callback=self.parse
             )
-            break
 
     def parse(self, response):
         for el in response.xpath('//tr'):
