@@ -5,11 +5,11 @@ from locations.categories import Code
 from typing import List, Dict
 
 class INWISpider(scrapy.Spider):
-    name: str = 'INWI_dac'
-    spider_type: str = 'chain'
+    name = 'inwi_dac'
+    brand_name = 'inwi_dac'
+    spider_type = 'chain'
     spider_categories: List[str] = [Code.TELEPHONE_SERVICE]
     spider_countries: List[str] = [pycountry.countries.lookup('ma').alpha_2]
-    item_attributes: Dict[str, str] = {'brand': 'INWIa'}
     allowed_domains: List[str] = ['inwi.ma']
 
     def start_requests(self):
