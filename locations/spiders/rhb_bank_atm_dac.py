@@ -9,11 +9,13 @@ from locations.categories import Code
 
 class rhbSpider(scrapy.Spider):
     name = 'rhb_bank_atm_dac'
-    brand = 'RHB Bank'
+    brand_name = 'RHB Bank'
     spider_type = 'chain'
     spider_categories = [Code.ATM]
     spider_countries: List[str] = [pycountry.countries.lookup('my').alpha_2]
     allowed_domains: List[str] = ['www.rhbgroup.com']
+
+    # start_urls = ["https://www.rhbgroup.com/locate/js/outlets.js"]
 
     def start_requests(self):
     
@@ -24,6 +26,7 @@ class rhbSpider(scrapy.Spider):
             callback = self.parse_contacts
         )
 
+    
     def parse_contacts(self, response):
 
         soup = BeautifulSoup(response.text, 'lxml')

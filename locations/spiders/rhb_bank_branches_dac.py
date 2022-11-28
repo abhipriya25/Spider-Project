@@ -10,11 +10,13 @@ import uuid
 
 class rhbSpider(scrapy.Spider):
     name = 'rhb_bank_branches_dac'
-    brand = 'RHB Bank'
+    brand_name = 'RHB Bank'
     spider_type = 'chain'
     spider_categories = [Code.BANK]
     spider_countries: List[str] = [pycountry.countries.lookup('my').alpha_2]
     allowed_domains: List[str] = ['www.rhbgroup.com']
+
+    # start_urls = ["https://www.rhbgroup.com/js/branch.js"]
 
     def start_requests(self):
         
