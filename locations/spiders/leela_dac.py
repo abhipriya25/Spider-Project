@@ -49,6 +49,7 @@ class TasshilatEspaceSpider(scrapy.Spider):
                      'addr_full': text[0].extract(),
                      'phone': get_phone_numbers(text[1].extract()),
                      'email':
-                         hotel.xpath('./div/span/div/div/div[@class="desdestination__si-desc"]/p/a/text()')[0].extract()}
+                         hotel.xpath('./div/span/div/div/div[@class="desdestination__si-desc"]/p/a/text()')[0].extract(),
+                     "website": "https://www.theleela.com/"}
 
             yield GeojsonPointItem(**point)

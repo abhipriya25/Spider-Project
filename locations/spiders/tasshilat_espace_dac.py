@@ -42,10 +42,11 @@ class TasshilatEspaceSpider(scrapy.Spider):
         for el in response.xpath('//tr'):
             text = el.xpath('./td/text()')
             point = {
-                'ref' : text[0].extract(),
-                'addr_full' : text[1].extract(),
-                'city' : text[3].extract(),
-                'name' : el.xpath('./td/a/text()')[0].extract()}
+                'ref': text[0].extract(),
+                'addr_full': text[1].extract(),
+                'city': text[3].extract(),
+                'name': el.xpath('./td/a/text()')[0].extract(),
+                'website': 'https://www.tasshilat.ma/index.html'}
             coords = el.xpath('./td/a[contains(@href, "https://www.google.com")]/@href')[0].extract()
             coords = re.findall(r'-?\d+.?\d+', coords)
             point['lat'] = float(coords[0])
