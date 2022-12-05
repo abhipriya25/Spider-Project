@@ -26,10 +26,8 @@ class EtisalatSpider(scrapy.Spider):
         '''
 
         @url https://avoska.ru/api/get_shops.php?map=1
-        @returns items 40 60
-        @returns requests 0 0
-        @cb_kwargs {"email": ["info@avoska.ru"], "phone": ["+7(495) 725 41 54"]}
-        @scrapes ref addr_full website lat lon
+        @returns items 3000 3100
+        @scrapes ref name addr_full city website lat lon
         '''
 
 
