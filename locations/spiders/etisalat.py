@@ -1,5 +1,6 @@
 import scrapy
 import pycountry
+import uuid
 from locations.items import GeojsonPointItem
 from locations.categories import Code
 from typing import List, Dict
@@ -15,28 +16,34 @@ class EtisalatSpider(scrapy.Spider):
 
     def start_requests(self):
         url: str = "https://www.etisalat.ae/content/dam/etisalat/prod-mock-assets/storesnew.json"
-        headers = {
-            'sdata': 'eyJjaGFubmVsIjoid2ViIiwiYXBwbGljYXRpb25fb3JpZ2luIjoiaW53aS5tYSIsInV1aWQiOiIwMmU1NmNhOS03ZTBjLTQ5YzktYmVjZS1hNGRmZWI5ODEzOWYiLCJsYW5ndWFnZSI6ImZyIiwiYXBwVmVyc2lvbiI6MX0='
-        }
 
         yield scrapy.Request(
             url=url,
-            headers=headers,
             callback=self.parse
         )
 
     def parse(self, response):
+        '''
+
+        @url https://avoska.ru/api/get_shops.php?map=1
+        @returns items 40 60
+        @returns requests 0 0
+        @cb_kwargs {"email": ["info@avoska.ru"], "phone": ["+7(495) 725 41 54"]}
+        @scrapes ref addr_full website lat lon
+        '''
+
+
         responseData = response.json()
 
         for row in responseData['data']:
             data = {
-                'ref': row['locationId'],
-                'name': row['name'],
-                'addr_full': row['address1'],
-                'city': row['address2'],
+                'ref': row['locationId'] if row['locationId'] != '' else uuid.uuid4().hex,
+                'name': row.get('name', ''),
+                'addr_full': row.get('address1', ''),
+                'city': row.get('address2', ''),
                 'website': 'https://www.etisalat.ae/',
-                'lat': float(row['lat']),
-                'lon': float(row['lng']),
+                'lat': float(row.get('lat', '')),
+                'lon': float(row.get('lng', '')),
             }
 
             yield GeojsonPointItem(**data)
