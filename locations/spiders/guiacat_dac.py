@@ -1,13 +1,12 @@
 import scrapy
 import uuid
-import json
 from typing import Dict
 
 # https://guiacat.cat/en/restaurant/
 # uuid.uuid4().hex
-count = 1
 class GuiacatSpider(scrapy.Spider):
     name = 'guiacat_dac'
+    spider_type = 'generic'
     allowed_domains = ['guiacat.cat']
     spider_countries = []
     item_attributes: Dict[str, str] = {'brand': 'Guiacat', 'website' : 'https://guiacat.cat/en/restaurants/'}
