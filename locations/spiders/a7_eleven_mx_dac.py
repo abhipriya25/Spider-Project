@@ -31,5 +31,6 @@ class A7ElevenMxDacSpider(scrapy.Spider):
                      'name': item.get('name'),
                      'lat': item.get('latitude'),
                      'lon': item.get('longitude'),
+                     'website': 'https://www.7-eleven.com.mx/',
                      'opening_hours': open}
             yield GeojsonPointItem(**store)
