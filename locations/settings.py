@@ -15,11 +15,6 @@ BOT_NAME = 'locations'
 SPIDER_MODULES = ['locations.spiders']
 NEWSPIDER_MODULE = 'locations.spiders'
 
-FEED_EXPORTERS = {
-    'geojson': 'locations.exporters.GeoJsonExporter',
-    'ndgeojson': 'locations.exporters.LineDelimitedGeoJsonExporter',
-}
-
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36'
 
@@ -60,8 +55,8 @@ TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
 DEFAULT_REQUEST_HEADERS = {
-  'Accept': '*/*',
-  'Accept-Language': 'en',
+  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+  'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7'
 }
 
 # Enable or disable spider middlewares

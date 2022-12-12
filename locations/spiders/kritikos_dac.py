@@ -1,11 +1,27 @@
 # -*- coding: utf-8 -*-
+
 import scrapy
+import pycountry
 from locations.items import GeojsonPointItem
+from locations.categories import Code
+from typing import List, Dict
 
 class KritikosSpider(scrapy.Spider):
-    name = 'kritikos_dac'
-    allowed_domains = ['kritikos-sm.gr']
-    start_urls = ['https://kritikos-sm.gr/_next/data/Q4NMWlOILb4ZX8bHO4nXo/stores.json']
+    name: str = 'kritikos_dac'
+    spider_type: str = 'chain'
+    spider_categories: List[str] = [Code.MARKET]
+    spider_countries: List[str] = [pycountry.countries.lookup('gr').alpha_2]
+    item_attributes: Dict[str, str] = {'brand': 'Κρητικός'}
+    allowed_domains: List[str] = ['kritikos-sm.gr']
+
+    def start_requests(self):
+        url = 'https://kritikos-sm.gr/_next/data/3rwvK3hHivkw1aH13ztkp/stores.json'
+
+        yield scrapy.Request(
+            url=url
+        )
+
+
 
     DAY_REPLACE = {
         'ΔΕΥΤΕΡΑ': 'Mo',
@@ -18,52 +34,37 @@ class KritikosSpider(scrapy.Spider):
     }
 
     def parse(self, response):
-        self.data = response.json()['pageProps']
+        '''
+            276 Features (2022-06-14)
+        '''
+
+        responseData = response.json()['pageProps']['stores']
         
-        brand = 'Kritikos'
+        brand = 'Κρητικός'
         country = 'Ελλάδα'
         website = 'https://kritikos-sm.gr/'
 
-        for row in self.data['stores']:
-            item = GeojsonPointItem()
-            state = self.get_state(row.get('uuid'))
+        for row in responseData:
+            opening = row['fields']['work_hours']
+            opening = ' '.join(opening.split())
+            opening = opening.replace(' - ', '-')
+            opening = opening.replace('00 ', '00; ')
 
-            item['ref'] = row.get('uuid')
-            item['name'] = row.get('title')
-            item['brand'] = brand
-            item['addr_full'] = '{0}, {1}, {2}'.format(country, state, row.get('fields')['address'])
-            item['state'] = state
-            item['country'] = country
-            item['lat'] = row.get('fields')['coordinates'][1]
-            item['lon'] = row.get('fields')['coordinates'][0]
-            item['website'] = website
-            item['phone'] = row.get('phone')
-            item['opening_hours'] = self.parse_time(row.get('fields')['work_hours'])
 
-            yield item
-    
-    def get_state(self, uuid: str) -> str:
-        state = ''
-        for region in self.data['regions']:
-            ids = region['fields']['stores']
-            if uuid in ids:
-                state = region['title']
-        
-        return state
-    
-    def parse_time(self, time: str) -> dict:
-        working_hours = {}
-        data = time.split('\r\n')
+            for key, value in self.DAY_REPLACE.items():
+             opening = opening.replace(key, value)
 
-        for row in data:
+            data = {
+                'ref': row['uuid'],
+                'name': row['title'],
+                'brand': brand,
+                'street': row['fields']['address'],
+                'country': country,
+                'lat': row['fields']['coordinates'][1],
+                'lon': row['fields']['coordinates'][0],
+                'website': website,
+                'phone': row['fields']['phone'],
+                'opening_hours': opening
+            }
 
-            print('ROW >>> ', row.split(' ', 1)[0])
-
-            for day in self.DAY_REPLACE:
-                days = row.split(' ', 1)[0].replace(day, self.DAY_REPLACE[day])
-            
-            print('DAYS >>> ', days)
-
-            working_hours[days] = row.split(' ', 1)[1]
-        
-        return working_hours
+            yield GeojsonPointItem(**data)

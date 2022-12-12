@@ -21,7 +21,7 @@ To get started, you'll want to install the dependencies for this project.
 2. With `pipenv` installed, make sure you have the `all-the-places` repository checked out
 
    ```console
-   git clone https://gitlab.com/maximmakarov1996/places-spider.git
+   git clone https://gitlab.com/geo-spider/places-spider.git
    ```
 
 3. Then you can install the dependencies for the project

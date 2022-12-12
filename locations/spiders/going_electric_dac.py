@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
-from aiohttp import payload
+
 import scrapy
-import json
-import requests
 from locations.items import GeojsonPointItem
 
 
 class GoingElectricSpider(scrapy.Spider):
     name = 'going_electric_dac'
-    allowed_domains = ['goingelectric.de']
+    brand_name = "Going Electric"
     start_urls = ['https://api-test.goingelectric.de/chargepoints']
-
 
     def parse_data(self, response):
         data = response.json()

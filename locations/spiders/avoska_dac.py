@@ -7,11 +7,11 @@ from locations.categories import Code
 from typing import List, Dict
 
 class AvoskaSpider(scrapy.Spider):
-    name: str = 'avoska_dac'
+    name = 'avoska_dac'
+    brand_name = 'Avoska'
     spider_type: str = 'chain'
     spider_categories: List[str] = [Code.GROCERY]
     spider_countries: List[str] = [pycountry.countries.lookup('ru').alpha_2]
-    item_attributes: Dict[str, str] = {'brand': 'Avoska'}
     allowed_domains: List[str] = ['avoska.ru']
 
     def start_requests(self):

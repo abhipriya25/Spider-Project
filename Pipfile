@@ -14,9 +14,8 @@ boto3 = "*"
 pyyaml = "*"
 iteration-utilities = "*"
 pycountry = "*"
-selenium = "*"
-webdriver-manager = "*"
-aiohttp = "*"
+pyopenssl = "==22.0.0"
+numpy = "*"
 
 [dev-packages]
 
