@@ -34,7 +34,7 @@ class BlackberysSpider(scrapy.Spider):
         List_cities = []
 
         for i in new_responseData:
-            Str = (i.replace(" ", ""))
+            Str = (i.replace(" ", "%20"))
             List_cities.append(Str)
 
         for i in List_cities:
@@ -48,42 +48,47 @@ class BlackberysSpider(scrapy.Spider):
         #вложенная функция, видна только внутри функции parse_opening_hours
         def parse_op_hours_of_day(day_full, time_opening, time_closed) -> str:
             try:
-                return f'{day_full}: {f"{time_opening} Opening "}-{f" {time_closed} Closing"};'
+                return f'{day_full}: {f"{time_opening}"}-{f"{time_closed}"};'
             except KeyError:
-                return f'{day_full}: 00:00-24:00;'
+                return ''
 
         dictionary = json.loads(data)
 
         opening_hours: List[str] = [
-            parse_op_hours_of_day("Monday", str(dictionary["Monday"])[2:9], str(dictionary["Monday"])[10:-2]),
-            parse_op_hours_of_day("Tuesday", str(dictionary["Tuesday"])[2:9], str(dictionary["Tuesday"])[10:-2]),
-            parse_op_hours_of_day('Wednesday', str(dictionary["Wednesday"])[2:9], str(dictionary["Wednesday"])[10:-2]),
-            parse_op_hours_of_day('Thursday', str(dictionary["Thursday"])[2:9], str(dictionary["Thursday"])[10:-2]),
-            parse_op_hours_of_day('Friday', str(dictionary["Friday"])[2:9], str(dictionary["Friday"])[10:-2]),
-            parse_op_hours_of_day('Saturday', str(dictionary["Saturday"])[2:9], str(dictionary["Saturday"])[10:-2]),
-            parse_op_hours_of_day('Sunday', str(dictionary["Sunday"])[2:9], str(dictionary["Sunday"])[10:-2]),
+            parse_op_hours_of_day("Mo", str(dictionary["Monday"])[2:9], str(dictionary["Monday"])[10:-2]),
+            parse_op_hours_of_day("Tu", str(dictionary["Tuesday"])[2:9], str(dictionary["Tuesday"])[10:-2]),
+            parse_op_hours_of_day('We', str(dictionary["Wednesday"])[2:9], str(dictionary["Wednesday"])[10:-2]),
+            parse_op_hours_of_day('Th', str(dictionary["Thursday"])[2:9], str(dictionary["Thursday"])[10:-2]),
+            parse_op_hours_of_day('Fr', str(dictionary["Friday"])[2:9], str(dictionary["Friday"])[10:-2]),
+            parse_op_hours_of_day('Sa', str(dictionary["Saturday"])[2:9], str(dictionary["Saturday"])[10:-2]),
+            parse_op_hours_of_day('Su', str(dictionary["Sunday"])[2:9], str(dictionary["Sunday"])[10:-2]),
         ]
 
         return " ".join(opening_hours)
 
     def parse(self, response):
+        '''
+        @url https://storeapi.sekel.tech/v1/store-ivr-list/4d612d3a-b433-46b5-82c2-0181d72fde05/?city= + i
+        @returns items 250 300
+        @scrapes ref name addr_full city state country email  website phone lat lon
+        '''
 
         responseData = response.json()
 
         for row in responseData['data']:
             data = {
-                'ref': row['id'],
-                'name': row['name'],
-                'addr_full': row['address'],
-                'city': row['city'],
-                'state': row['state'],
-                'country': row['country'],
-                'email': row['email'],
+                'ref': row.get('id'),
+                'name': row.get('name'),
+                'addr_full': row.get('address'),
+                'city': row.get('city'),
+                'state': row.get('state'),
+                'country': row.get('country'),
+                'email': row.get('email'),
                 'website': 'https://blackberrys.com/',
-                'phone': row['number'],
-                'opening_hours': self.parse_opening_hours(row['operation_hours']),
-                'lat': float(row['latitude']),
-                'lon': float(row['longitude']),
+                'phone': row.get('number'),
+                'opening_hours': self.parse_opening_hours(row['operation_hours']) if row['operation_hours'] != '' else '',
+                'lat': float(row.get('latitude')),
+                'lon': float(row.get('longitude')),
             }
 
             yield GeojsonPointItem(**data)

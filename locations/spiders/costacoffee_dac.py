@@ -83,9 +83,9 @@ class CostaCoffeeSpider(scrapy.Spider):
 
     async def parse(self, response, email: List[str], phone: List[str]):
         '''
-               @url https://www.costacoffee.in/locations/store-locator/map?latitude=28.553532369889&longitude=77.12456293893058
-               @returns items 70 100
-               @scrapres ref name addr_full opening_hours website email phone lat lon
+        @url https://www.costacoffee.in/locations/store-locator/map?latitude=28.553532369889&longitude=77.12456293893058
+        @returns items 70 100
+        @scrapres ref name addr_full opening_hours website email phone lat lon
         '''
 
         responseData = response.json()
