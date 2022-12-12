@@ -55,7 +55,5 @@ class SpeedexSpider(scrapy.Spider):
                 'street': street,
                 'postcode': postcode,
                 'phone': phone,
-                'lon': 0,
-                'lat': 0
             }
             yield GeojsonPointItem(**data)
