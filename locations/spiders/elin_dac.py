@@ -7,33 +7,30 @@ from locations.categories import Code
 from typing import List, Dict
 
 class ElinSpider(scrapy.Spider):
-    name: str = 'elin_dac'
-    spider_type: str = 'chain'
-    spider_categories: List[str] = [Code.PETROL_GASOLINE_STATION]
-    spider_countries: List[str] = [pycountry.countries.lookup('gr').alpha_2]
-    item_attributes: Dict[str, str] = {'brand': 'Elin Oil'}
-    allowed_domains: List[str] = ['elin.gr']
+    name = "elin_dac"
+    brand_name = "Elin"
+    spider_type = "chain"
+    spider_chain_id = "1056"
+    spider_categories = [Code.PETROL_GASOLINE_STATION]
+    spider_countries = [pycountry.countries.lookup('gr').alpha_3]
+    allowed_domains = ["elin.gr"]
 
-    def start_requests(self):
-        url = 'https://elin.gr/umbraco/backoffice/MapMarkers/GetMapMarkers?language=el'
+    start_urls = ["https://elin.gr/umbraco/backoffice/MapMarkers/GetMapMarkers?language=el"]
 
-        yield scrapy.Request(
-            url=url
-        )
-    
     def parse(self, response):
         '''
-        542 Features (2022-06-08)
+        @url https://elin.gr/umbraco/backoffice/MapMarkers/GetMapMarkers?language=el
+        @returns items 550 560
+        @scrapes ref name addr_full phone website lat lon
         '''
         responseData = response.json()
         for row in responseData:
             data = {
                 'ref': row['Id'],
                 'name': row['Title'],
-                'brand': 'ELIN',
-                'website': 'https://elin.gr/',
+                'website': 'https://elin.gr',
                 'addr_full': row['Address'],
-                'phone': row['Phone'],
+                'phone': row['Phone'].split("&"),
                 'lat': row['Latitude'],
                 'lon': row['Longitude']
             }
