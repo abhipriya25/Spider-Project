@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
+
 import base64
 import hashlib
 import logging
 from scrapy.exporters import JsonLinesItemExporter, JsonItemExporter
 from scrapy.utils.python import to_bytes
-
+from locations import categories
 
 mapping = (
     ('addr_full', 'addr:full'),
@@ -14,15 +16,52 @@ mapping = (
     ('postcode', 'addr:postcode'),
     ('country', 'addr:country'),
     ('name', 'name'),
-    ('phone', 'phone'),
+    ('phone', 'phones'),
     ('email', 'email'),
     ('website', 'website'),
     ('store_url', 'store_url'),
-    ('opening_hours', 'opening_hours'),
+    ('opening_hours', 'operatingHours'),
     ('brand', 'brand'),
+    ('chain_id', 'chain_id'),
+    ('chain_name', 'chain_name'),
+    ('categories', 'categories'),
     ('brand_wikidata', 'brand:wikidata'),
 )
 
+def convert_category(category_name):
+    return {
+        "type": category_name,
+        "langCode": "en"
+    }
+
+def convert_attrs(attribute_type, attribute_value):
+    if attribute_type == "phone":
+        if attribute_value:
+            return { "Store": attribute_value }
+        else:
+            return { "Store": [] }
+    
+    elif attribute_type == "email":
+        if attribute_value:
+            return { "Customer Service": attribute_value }
+        else:
+            return { "Customer Service": [] }
+    
+    elif attribute_type == "opening_hours":
+        if attribute_value:
+            return { "Store": attribute_value }
+        else:
+            return { "Store": [] }
+    
+    elif attribute_type == "categories":
+        if attribute_value:
+            return [convert_category(category_name) for category_name in attribute_value]
+        else:
+            return []
+    
+    else:
+        return attribute_value
+  
 
 def item_to_properties(item):
     props = {}
@@ -38,6 +77,8 @@ def item_to_properties(item):
     # Bring in the optional stuff
     for map_from, map_to in mapping:
         item_value = item.get(map_from)
+        item_value = convert_attrs(map_from, item_value)
+        
         if item_value:
             props[map_to] = item_value
 

@@ -3,21 +3,26 @@
 import scrapy
 from locations.items import GeojsonPointItem
 from bs4 import BeautifulSoup
-
+from locations.categories import Code
+import pycountry
 
 class CoffeeIslandSpider(scrapy.Spider):
     
     name = "coffee_island_dac"
-    brand_name = "Coffee Island"
+    brand_name = "COFFEE ISLAND"
     spider_type = "chain"
+    spider_chain_id = 25802
+    spider_categories = [Code.SPECIALTY_STORE]
+    spider_countries = [pycountry.countries.lookup('gr').alpha_3]
+    allowed_domains = ["coffeeisland.gr"]
 
-    start_urls = ["https://www.coffeeisland.gr/stores/index"]
+    start_urls = ["https://coffeeisland.gr/stores/index"]
     
     def parse(self, response):
         '''
         @url https://www.coffeeisland.gr/stores/index
         @returns items 470 480
-        @scrapes ref name addr_full opening_hours phone website lat lon
+        @scrapes ref addr_full opening_hours phone website lat lon
         '''
 
         doc = BeautifulSoup(response.text)

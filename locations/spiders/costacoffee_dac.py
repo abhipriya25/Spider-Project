@@ -11,9 +11,13 @@ class CostaCoffeeSpider(scrapy.Spider):
     name = 'costacoffee_dac'
     brand_name = 'Costa Coffee'
     spider_type = 'chain'
-    spider_categories: List[str] = [Code.BAKERY_AND_BAKED_GOODS_STORE]
-    spider_countries: List[str] = [pycountry.countries.lookup('in').alpha_3]
-    allowed_domains: List[str] = ['costacoffee.in']
+    spider_chain_id = "1873"
+    spider_categories = [Code.BAKERY_AND_BAKED_GOODS_STORE]
+    spider_countries = [pycountry.countries.lookup('in').alpha_3]
+    allowed_domains = ['costacoffee.in']
+
+    # start_urls = ["https://www.costacoffee.in/api/cf/?locale=en-IN&include=2&content_type=storeLocatorStore&limit=500&f\
+    #ields"]
 
     def start_requests(self):
         url = "https://www.costacoffee.in/help-and-advice"
@@ -28,7 +32,6 @@ class CostaCoffeeSpider(scrapy.Spider):
             method='GET',
             headers=headers,
             callback=self.parse_contacts,
-            # Response will be parsed in parse function
         )
 
     def parse_contacts(self, response):
@@ -61,7 +64,6 @@ class CostaCoffeeSpider(scrapy.Spider):
         )
 
     def parse_opening_hours(self, data) -> str:
-        #вложенная функция, видна только внутри функции parse_opening_hours
         def parse_op_hours_of_day(day, day_full) -> str:
             try:
                 return f'{day}: {data[f"{day_full}Opening"]}-{data[f"{day_full}Closing"]};'
@@ -94,9 +96,11 @@ class CostaCoffeeSpider(scrapy.Spider):
             data = {
                 'ref': row.get('sys').get('id'),
                 'name': row.get('fields').get('storeName'),
+                'chain_id': "1873",
+                'chain_name': "Costa Coffee",
                 'addr_full': row.get('fields').get('storeAddress'),
                 'opening_hours': self.parse_opening_hours(row.get('fields')),
-                'website': 'costacoffee.in/',
+                'website': 'https://costacoffee.in',
                 'email': email,
                 'phone': phone,
                 'lat': float(row.get('fields').get('location').get('lat')),

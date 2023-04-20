@@ -8,6 +8,7 @@
 import scrapy
 
 class GeojsonPointItem(scrapy.Item):
+    ref = scrapy.Field()
     lat = scrapy.Field()
     lon = scrapy.Field()
     name = scrapy.Field()
@@ -23,7 +24,9 @@ class GeojsonPointItem(scrapy.Item):
     store_url = scrapy.Field()
     email = scrapy.Field()
     opening_hours = scrapy.Field()
-    ref = scrapy.Field()
     brand = scrapy.Field()
+    chain_id = scrapy.Field()
+    chain_name = scrapy.Field()
+    categories = scrapy.Field()
     brand_wikidata = scrapy.Field()
     extras = scrapy.Field()
