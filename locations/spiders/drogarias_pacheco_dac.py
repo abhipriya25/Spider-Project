@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import scrapy
 from locations.categories import Code
 import pycountry
@@ -9,8 +10,10 @@ class DrogariasPanchecoDacSpider(scrapy.Spider):
     name = 'drogarias_pacheco_dac'
     brand_name = 'Drogarias Pancheco'
     spider_type = 'chain'
+    spider_chain_name = 'Drogarias Pancheco'
+    spider_chain_id = 8933
     spider_categories = [Code.PHARMACY]
-    spider_countries = [pycountry.countries.lookup('br').alpha_3]
+    spider_countries = [pycountry.countries.lookup('bra').alpha_3]
     allowed_domains = ['www.drogariaspacheco.com.br']
     start_urls = ['https://www.drogariaspacheco.com.br/api/dataentities/PR/documents/fad9798f-9914-11ea-8337-122b0ab818b1/arquivo/attachments/nossas-lojas.js']
 
@@ -28,15 +31,21 @@ class DrogariasPanchecoDacSpider(scrapy.Spider):
             if item['telefoneDois']:
                 phone.append(''.join((re.findall(r'[0-9//]', item['telefoneDois']))))
 
-            store = {'ref': item['id'],
-                     'name': item['nome'],
-                     'addr_full': f"{item['endereco']}, {item['cidade']}, {item['uf']}, {item['cep']}",
-                     'city': item['cidade'],
-                     'state': item['uf'],
-                     'postcode': item['cep'],
-                     'phone': phone,
-                     'website': 'https://www.drogariaspacheco.com.br/',
-                     'opening_hours': f'Mo-Fr {item["horarioAberturaSegsex"]}-{item["horarioFechamentoSegsex"]}; Sa {item["horarioAberturaSabado"]}-{item["horarioFechamentoSabado"]}; Su {item["horarioAberturaDomingo"]}-{item["horarioFechamentoDomingo"]}'}
+            store = {
+
+                'chain_name': self.spider_chain_name,
+                'chain_id': self.spider_chain_id,
+                'brand': self.brand_name,
+                'ref': item['id'],
+                'name': item['nome'],
+                'addr_full': f"{item['endereco']}, {item['cidade']}, {item['uf']}, {item['cep']}",
+                'city': item['cidade'],
+                'state': item['uf'],
+                'postcode': item['cep'],
+                'phone': phone,
+                'website': 'https://www.drogariaspacheco.com.br/',
+                'opening_hours': f'Mo-Fr {item["horarioAberturaSegsex"]}-{item["horarioFechamentoSegsex"]}; Sa {item["horarioAberturaSabado"]}-{item["horarioFechamentoSabado"]}; Su {item["horarioAberturaDomingo"]}-{item["horarioFechamentoDomingo"]}'
+            }
 
             yield GeojsonPointItem(**store)
 

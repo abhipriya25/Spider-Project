@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import scrapy
 from locations.categories import Code
 import pycountry
@@ -9,6 +10,8 @@ class PagueMenosDacSpider(scrapy.Spider):
     name = 'pague_menos_dac'
     brand_name = 'Pague Menos'
     spider_type = 'chain'
+    spider_chain_name = 'Pague Menos'
+    spider_chain_id = 9083
     spider_category = [Code.PHARMACY]
     spider_countries = [pycountry.countries.lookup('br').alpha_3]
     allowed_domains = ['pmenos.paguemenos.com.br']
@@ -26,12 +29,17 @@ class PagueMenosDacSpider(scrapy.Spider):
             phones = ''.join((re.findall(r'[0-9//]', phones)))
             phones = phones.split('/')
 
-            store = {'ref': item['meta_box']['id_loja'],
-                     'addr_full': f"{item['meta_box']['endereco']}, {item['meta_box']['cidade']}, {item['meta_box']['uf']}, {item['meta_box']['cep']}",
-                     'city': item['meta_box']['cidade'],
-                     'state': item['meta_box']['uf'],
-                     'postcode': item['meta_box']['cep'],
-                     'phone': phones,
-                     'website': 'https://www.paguemenos.com.br/'}
+            store = {
+                'chain_name': self.spider_chain_name,
+                'chain_id': self.spider_chain_id,
+                'brand': self.brand_name,
+                'ref': item['meta_box']['id_loja'],
+                'addr_full': f"{item['meta_box']['endereco']}, {item['meta_box']['cidade']}, {item['meta_box']['uf']}, {item['meta_box']['cep']}",
+                'city': item['meta_box']['cidade'],
+                'state': item['meta_box']['uf'],
+                'postcode': item['meta_box']['cep'],
+                'phone': phones,
+                'website': 'https://www.paguemenos.com.br/'
+            }
 
             yield GeojsonPointItem(**store)
